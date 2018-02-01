@@ -20,19 +20,20 @@ export default {
       msg: 'Login',
       username: '',
       password: '',
+      user: null,
       errors: []
     }
   },
   methods: {
     login () {
-      let uri = 'http://localhost:8888/users/register';
+      let uri = 'http://localhost:8888/users/login';
       axios.post(uri, {
         credentials: {
           username: this.username,
           password: this.password
         }
       }).then(response => {
-        console.log(response.data)
+        console.log(response.data.user)
       }).catch(e => {
         this.errors.push(e.error)
         console.log(e.response)
