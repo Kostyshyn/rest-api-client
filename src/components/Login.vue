@@ -2,10 +2,14 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <form action="" @submit.prevent="login">
-      <input type="text" placeholder="username" v-model="username">
+      <input type="text" placeholder="username or email" v-model="userInput">
       <input type="password" placeholder="password" v-model="password">
       <button type="submit">Login</button>
     </form>
+    <h2 v-if="user">Hello, {{ user.username }}</h2>
+    <ul v-if="errors">
+      <li v-for="e in errors">{{ e.message }}</li>
+    </ul>
   </div>
 </template>
 
@@ -18,35 +22,26 @@ export default {
   data () {
     return {
       msg: 'Login',
-      username: '',
+      userInput: '',
       password: '',
       user: null,
-      errors: []
+      errors: null
     }
   },
   methods: {
     login () {
-      let uri = 'http://localhost:8888/users/login';
+      let uri = 'http://localhost:8888/login';
       axios.post(uri, {
-        credentials: {
-          username: this.username,
-          password: this.password
-        }
+        userInput: this.userInput,
+        password: this.password,
       }).then(response => {
-        console.log(response.data.user)
+        this.user = response.data.user;
+        this.errors = null;
+        this.$store.dispatch('setToken', response.data.token);
+        this.$store.dispatch('setUser', response.data.user);
       }).catch(e => {
-        this.errors.push(e.error)
-        console.log(e.response)
+        this.errors = e.response.data.error;
       })
-
-      // axios.get(`http://jsonplaceholder.typicode.com/posts`)
-      // .then(response => {
-      //   // JSON responses are automatically parsed.
-      //   console.log(response.data)
-      // })
-      // .catch(e => {
-      //   this.errors.push(e)
-      // })
     }
   }
 }

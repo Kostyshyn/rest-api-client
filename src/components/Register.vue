@@ -3,10 +3,14 @@
     <h1>{{ msg }}</h1>
     <form action="" @submit.prevent="register">
       <input type="text" placeholder="username" v-model="username">
+      <input type="text" placeholder="email" v-model="email">
       <input type="password" placeholder="password" v-model="password">
       <button type="submit">Register</button>
     </form>
- 	<h2 v-if="user">Hello, {{ user.username }}</h2>
+ 	  <h2 v-if="user">Hello, {{ user.username }}</h2>
+    <ul v-if="errors">
+      <li v-for="e in errors">{{ e.message }}</li>
+    </ul>
   </div>
 </template>
 
@@ -21,24 +25,25 @@ export default {
       msg: 'Register',
       username: '',
       password: '',
+      email: '',
       user: null,
-      errors: []
+      errors: null
     }
   },
   methods: {
     register () {
-      let uri = 'http://localhost:8888/users/register';
+      let uri = 'http://localhost:8888/register';
       axios.post(uri, {
-        credentials: {
-          username: this.username,
-          password: this.password
-        }
+        username: this.username,
+        password: this.password,
+        email: this.email
       }).then(response => {
-        console.log(response.data)
-        this.user = response.data.user
+        this.user = response.data.user;
+        this.errors = null;
+        this.$store.dispatch('setToken', response.data.token);
+        this.$store.dispatch('setUser', response.data.user);
       }).catch(e => {
-        this.errors.push(e.error)
-        console.log(e.response)
+        this.errors = e.response.data.error;
       })
 
       // axios.get(`http://jsonplaceholder.typicode.com/posts`)
