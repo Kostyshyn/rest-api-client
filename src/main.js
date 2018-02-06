@@ -6,8 +6,14 @@ import router from './router'
 import Vuex from 'vuex'
 import { sync } from 'vuex-router-sync'
 import store from '@/store'
+import socketio from 'socket.io-client';
+import VueSocketIO from 'vue-socket.io';
+import * as CONFIG from './config.js'
+
+export const SocketInstance = socketio(CONFIG.ROOT_URI);
 
 Vue.use(Vuex)
+Vue.use(VueSocketIO, SocketInstance)
 
 sync(store, router)
 

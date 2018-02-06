@@ -17,6 +17,7 @@
 <script>
 
 import axios from 'axios'
+import * as CONFIG from '../config.js'
 
 export default {
   name: 'Register',
@@ -32,7 +33,7 @@ export default {
   },
   methods: {
     register () {
-      let uri = 'http://localhost:8888/register';
+      let uri = CONFIG.ROOT_URI + '/register';
       axios.post(uri, {
         username: this.username,
         password: this.password,

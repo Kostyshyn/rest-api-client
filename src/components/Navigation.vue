@@ -23,6 +23,9 @@
 </template>
 
 <script>
+
+import * as CONFIG from '../config.js'
+
 export default {
   name: 'Navigation',
   data () {
@@ -30,6 +33,21 @@ export default {
   },
   methods: {
     logout() {
+      // let uri = 'http://localhost:8888/logout';
+      // axios.post(uri, {
+      //   username: this.username,
+      //   password: this.password,
+      //   email: this.email
+      // }).then(response => {
+      //   this.user = response.data.user;
+      //   this.errors = null;
+      //   this.$store.dispatch('setToken', response.data.token);
+      //   this.$store.dispatch('setUser', response.data.user);
+      // }).catch(e => {
+      //   this.errors = e.response.data.error;
+      // })
+
+      this.$socket.emit('logout', this.$store.state.user.username);
       this.$store.dispatch('logout');
     }
   },
