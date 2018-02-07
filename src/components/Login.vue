@@ -40,6 +40,7 @@ export default {
         this.errors = null;
         this.$store.dispatch('setToken', response.data.token);
         this.$store.dispatch('setUser', response.data.user);
+        this.$socket.emit('authenticate', response.data.token);
       }).catch(e => {
         this.errors = e.response.data.error;
       })

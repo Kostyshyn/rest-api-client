@@ -24,6 +24,14 @@ new Vue({
   el: '#app',
   router,
   store,
+  sockets: {
+  	connect () {
+      console.log('socket connected');
+    },
+    err (data) {
+      console.log(data);
+    }
+  },
   components: { App },
   template: '<App/>'
 })
