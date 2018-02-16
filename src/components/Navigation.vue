@@ -18,21 +18,27 @@
       active-class="active"
       >Register</router-link>
     </div>
-    <a href="#" v-if="isUserLoggedIn" @click="logout">Logout</a> 
+    <div v-if="isUserLoggedIn">
+      <a href="#" @click="logout">Logout</a> 
+      <a href="#"></a>      
+    </div>
   </div>
 </template>
 
 <script>
 
+import { Event } from '../events';
 import * as CONFIG from '../config.js'
 
 export default {
   name: 'Navigation',
-  data () {
-    return {}
+  data(){
+    return {
+      user: null
+    }
   },
   methods: {
-    logout() {
+    logout(){
       // let uri = 'http://localhost:8888/logout';
       // axios.post(uri, {
       //   username: this.username,
@@ -47,14 +53,18 @@ export default {
       //   this.errors = e.response.data.error;
       // })
 
-      this.$socket.emit('logout', this.$store.state.user.username);
+      // this.$socket.emit('logout', this.$store.state.user.username);
       this.$store.dispatch('logout');
     }
   },
   computed: {
-    isUserLoggedIn() {
-      return this.$store.state.isUserLoggedIn;
+    isUserLoggedIn(){
+      return this.$store.getters.getCurrentState.isUserLoggedIn;
     }
+  },
+  created(){
+    // Event.$emit('event');
+    // Event.$on('event', /* handler */);
   }
 }
 </script>

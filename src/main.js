@@ -25,13 +25,16 @@ new Vue({
   router,
   store,
   sockets: {
-  	connect () {
+  	connect(){
       console.log('socket connected');
     },
-    err (data) {
+    err(data){
       console.log(data);
     }
   },
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  beforeCreate(){
+    this.$store.commit('initializeCurrentState');
+  }
 })

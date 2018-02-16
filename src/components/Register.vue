@@ -21,7 +21,7 @@ import * as CONFIG from '../config.js'
 
 export default {
   name: 'Register',
-  data () {
+  data(){
     return {
       msg: 'Register',
       username: '',
@@ -32,7 +32,7 @@ export default {
     }
   },
   methods: {
-    register () {
+    register(){
       let uri = CONFIG.ROOT_URI + '/register';
       axios.post(uri, {
         username: this.username,

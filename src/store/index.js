@@ -11,7 +11,16 @@ export default new Vuex.Store({
 		isUserLoggedIn: false
 	},
 	mutations: {
+		initializeCurrentState(state){
+			if (localStorage.getItem('token')){
+				state.token = JSON.parse(localStorage.getItem('token'));
+				state.isUserLoggedIn = true;
+			}
+		},
 		setToken(state, token){
+			if (window.localStorage){
+				localStorage.setItem('token', JSON.stringify(token));
+			}
 			state.token = token
 			if (token){
 				state.isUserLoggedIn = true
@@ -23,6 +32,9 @@ export default new Vuex.Store({
 			state.user = user
 		},
 		logout(state){
+			if (window.localStorage){
+				localStorage.removeItem('token');
+			}
 			state.token = null
 			state.user = null
 			state.isUserLoggedIn = false
@@ -37,6 +49,15 @@ export default new Vuex.Store({
 		},
 		logout({ commit }){
 			commit('logout')
+		}
+	},
+	getters: {
+		getCurrentState(state, getters){
+			return {
+				token: state.token,
+				user: state.user,
+				isUserLoggedIn: state.isUserLoggedIn
+			};
 		}
 	}
 })

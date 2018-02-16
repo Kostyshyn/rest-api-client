@@ -6,7 +6,6 @@
       <input type="password" placeholder="password" v-model="password">
       <button type="submit">Login</button>
     </form>
-    <h2 v-if="user">Hello, {{ user.username }}</h2>
     <ul v-if="errors">
       <li v-for="e in errors">{{ e.message }}</li>
     </ul>
@@ -20,7 +19,7 @@ import * as CONFIG from '../config.js'
 
 export default {
   name: 'Login',
-  data () {
+  data(){
     return {
       msg: 'Login',
       userInput: '',
@@ -30,7 +29,7 @@ export default {
     }
   },
   methods: {
-    login () {
+    login(){
       let uri = CONFIG.ROOT_URI + '/login';
       axios.post(uri, {
         userInput: this.userInput,
@@ -45,6 +44,9 @@ export default {
         this.errors = e.response.data.error;
       })
     }
+  },
+  created(){
+
   }
 }
 </script>
