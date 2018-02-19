@@ -1,7 +1,10 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
+import VueSocketIO from 'vue-socket.io'
+import { getConnection } from '../socket'
 
-Vue.use(Vuex)
+var vm = Vue;
+vm.use(Vuex)
 
 export default new Vuex.Store({
 	strict: true,
@@ -13,20 +16,21 @@ export default new Vuex.Store({
 	mutations: {
 		initializeCurrentState(state){
 			if (localStorage.getItem('token')){
-				state.token = JSON.parse(localStorage.getItem('token'));
+				var token = JSON.parse(localStorage.getItem('token'));
+				state.token = token;
 				state.isUserLoggedIn = true;
+				var socket = getConnection(token);
+				vm.use(VueSocketIO, socket);
 			}
 		},
 		setToken(state, token){
 			if (window.localStorage){
 				localStorage.setItem('token', JSON.stringify(token));
 			}
-			state.token = token
-			if (token){
-				state.isUserLoggedIn = true
-			} else {
-				state.isUserLoggedIn = false
-			}
+			state.token = token;
+			var socket = getConnection(token);
+			vm.use(VueSocketIO, socket);
+			state.isUserLoggedIn = true;
 		},
 		setUser(state, user){
 			state.user = user

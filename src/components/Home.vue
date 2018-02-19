@@ -1,6 +1,7 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
+    <input type="text" v-model="msg">
+    <button @click="click">send</button>
   </div>
 </template>
 
@@ -9,8 +10,23 @@ export default {
   name: 'Home',
   data(){
     return {
-      msg: 'Home page'
+      msg: null
     }
+  },
+  sockets: {
+    custom(val){
+      console.log(val);
+    }
+  },
+  methods: {
+    click(){
+      if (this.$socket){
+        this.$socket.emit('cl', this.msg);
+      }
+    }
+  },
+  created(){
+
   }
 }
 </script>
