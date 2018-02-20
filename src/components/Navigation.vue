@@ -40,8 +40,8 @@ export default {
   methods: {
     logout(){
       this.$store.dispatch('logout');
-      this.$socket.emit('logout');
-      this.$socket.disconnect();
+      // this.$socket.emit('logout');
+      // this.$socket.disconnect();
     }
   },
   computed: {

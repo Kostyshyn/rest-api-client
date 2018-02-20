@@ -16,7 +16,6 @@
 
 import axios from 'axios'
 import * as CONFIG from '../config.js'
-import { getConnection } from '../socket'
 
 export default {
   name: 'Login',
@@ -31,23 +30,27 @@ export default {
   },
   methods: {
     login(){
-      let uri = CONFIG.ROOT_URI + '/login';
-      axios.post(uri, {
-        userInput: this.userInput,
-        password: this.password,
-      }).then(response => {
-        this.user = response.data.user;
-        this.errors = null;
-        this.$store.dispatch('setToken', response.data.token);
-        this.$store.dispatch('setUser', response.data.user);
-        
-        console.log(this.$socket);
-        // this.$socket.emit('authenticate', response.data.token);
+      let isLogged = this.$store.getters.getCurrentState.isUserLoggedIn;
+      if (!isLogged){
+        let uri = CONFIG.ROOT_URI + '/login';
+        axios.post(uri, {
+          userInput: this.userInput,
+          password: this.password,
+        }).then(response => {
+          this.user = response.data.user;
+          this.errors = null;
+          this.$store.dispatch('setToken', response.data.token);
+          this.$store.dispatch('setUser', response.data.user);
 
-        // getConnection(response.data.token);
-      }).catch(e => {
-        this.errors = e.response.data.error;
-      })
+          console.log(this.$socket.connected);
+          // this.$socket.emit('authenticate', response.data.token);
+
+        }).catch(e => {
+          this.errors = e.response.data.error;
+        });
+      } else {
+        alert('You are already logged in')
+      }
     }
   },
   created(){

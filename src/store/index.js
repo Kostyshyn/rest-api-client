@@ -28,9 +28,9 @@ export default new Vuex.Store({
 				localStorage.setItem('token', JSON.stringify(token));
 			}
 			state.token = token;
+			state.isUserLoggedIn = true;
 			var socket = getConnection(token);
 			vm.use(VueSocketIO, socket);
-			state.isUserLoggedIn = true;
 		},
 		setUser(state, user){
 			state.user = user

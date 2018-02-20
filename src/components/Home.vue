@@ -14,14 +14,14 @@ export default {
     }
   },
   sockets: {
-    custom(val){
+    message(val){
       console.log(val);
     }
   },
   methods: {
     click(){
       if (this.$socket){
-        this.$socket.emit('cl', this.msg);
+        this.$socket.emit('send.message', this.msg);
       }
     }
   },

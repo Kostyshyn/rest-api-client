@@ -4,7 +4,7 @@ import * as CONFIG from '../config.js'
 // const SocketInstance = socketio(CONFIG.ROOT_URI);
 
 function getConnection(token){
-	const SocketInstance = socketio(CONFIG.ROOT_URI);	
+	const SocketInstance = socketio.connect(CONFIG.ROOT_URI, { forceNew: true });	
 	var socket = SocketInstance;
 	socket.on('connect', function(client){
 		socket.emit('authenticate', {
@@ -20,10 +20,6 @@ function getConnection(token){
     			console.log("User's token has expired unauth");
   			}
 		});
-
-		// socket.on('custom', function(val){
-		// 	console.log(val)
-		// })
 	})
 	return SocketInstance;
 };
