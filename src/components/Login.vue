@@ -16,7 +16,7 @@
 
 import axios from 'axios'
 import * as CONFIG from '../config.js'
-import { getConnection } from '../socket'
+import { getConnection } from '../socket/'
 
 export default {
   name: 'Login',
@@ -40,8 +40,12 @@ export default {
         this.errors = null;
         this.$store.dispatch('setToken', response.data.token);
         this.$store.dispatch('setUser', response.data.user);
-        
-        console.log(this.$socket);
+
+        var s = getConnection(response.data.token);
+
+        this.$store.dispatch('setSocket', s);
+
+        console.log('auth v', s.connected, s.id)
         // this.$socket.emit('authenticate', response.data.token);
 
         // getConnection(response.data.token);

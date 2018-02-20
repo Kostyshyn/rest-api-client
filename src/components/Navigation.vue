@@ -39,9 +39,12 @@ export default {
   },
   methods: {
     logout(){
-      this.$store.dispatch('logout');
-      this.$socket.emit('logout');
-      this.$socket.disconnect();
+      // this.$socket.emit('logout');
+      var s = this.$store.getters.getSocket;
+      if (s){
+        console.log('auth out', s.connected, s.id)
+        this.$store.dispatch('logout');
+      }
     }
   },
   computed: {

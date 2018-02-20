@@ -7,20 +7,20 @@ var vm = Vue;
 vm.use(Vuex)
 
 export default new Vuex.Store({
-	strict: true,
+	// strict: true,
 	state: {
 		token: null,
 		user: null,
-		isUserLoggedIn: false
+		isUserLoggedIn: false,
+		socket: null
 	},
 	mutations: {
 		initializeCurrentState(state){
 			if (localStorage.getItem('token')){
 				var token = JSON.parse(localStorage.getItem('token'));
 				state.token = token;
+				state.socket = getConnection(token);
 				state.isUserLoggedIn = true;
-				var socket = getConnection(token);
-				vm.use(VueSocketIO, socket);
 			}
 		},
 		setToken(state, token){
@@ -28,9 +28,10 @@ export default new Vuex.Store({
 				localStorage.setItem('token', JSON.stringify(token));
 			}
 			state.token = token;
-			var socket = getConnection(token);
-			vm.use(VueSocketIO, socket);
 			state.isUserLoggedIn = true;
+		},
+		setSocket(state, socket){
+			state.socket = socket;
 		},
 		setUser(state, user){
 			state.user = user
@@ -42,11 +43,16 @@ export default new Vuex.Store({
 			state.token = null
 			state.user = null
 			state.isUserLoggedIn = false
+			state.socket.disconnect();
+			state.socket = null;
 		}
 	},
 	actions: {
 		setToken({ commit }, token){
 			commit('setToken', token)
+		},	
+		setSocket({ commit }, socket){
+			commit('setSocket', socket)
 		},
 		setUser({ commit }, user){
 			commit('setUser', user)
@@ -62,6 +68,9 @@ export default new Vuex.Store({
 				user: state.user,
 				isUserLoggedIn: state.isUserLoggedIn
 			};
+		},
+		getSocket(state, getters){
+			return state.socket;
 		}
 	}
 })

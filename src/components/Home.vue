@@ -16,17 +16,24 @@ export default {
   sockets: {
     custom(val){
       console.log(val);
+    },
+    disconnect(){
+      console.log('socket disconnect')
     }
   },
   methods: {
     click(){
-      if (this.$socket){
-        this.$socket.emit('cl', this.msg);
+      var s = this.$store.getters.getSocket;
+      if (s){
+        s.on('custon', function(val){
+          console.log(val);
+        });
+        s.emit('cl', this.msg);
       }
     }
   },
   created(){
-
+    
   }
 }
 </script>
