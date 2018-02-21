@@ -18,7 +18,7 @@ export default {
 
 	        console.log('auth v', s.connected, s.id)
 	    }).catch(e => {
-	        context.errors = e.data.error;
+	        context.errors = e.response.data.error;
 	    });
 	},
 	register(context, credentials){
