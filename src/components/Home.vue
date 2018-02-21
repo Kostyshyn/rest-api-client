@@ -13,23 +13,16 @@ export default {
       msg: null
     }
   },
-  sockets: {
-    custom(val){
-      console.log(val);
-    },
-    disconnect(){
-      console.log('socket disconnect')
-    }
-  },
   methods: {
     click(){
-      var s = this.$store.getters.getSocket;
-      if (s){
-        s.on('custon', function(val){
-          console.log(val);
-        });
-        s.emit('cl', this.msg);
+      if (this.socket){
+        this.socket.emit('send.message', this.msg);
       }
+    }
+  },
+  computed: {
+    socket(){
+      return this.$store.getters.getSocket;
     }
   },
   created(){

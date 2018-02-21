@@ -9,25 +9,44 @@ export default {
 	login(context, credentials){
 		let uri = CONFIG.ROOT_URI + '/login';
 		axios.post(uri, credentials).then(response => {
-	        // this.user = response.data.user;
+			var socket = getConnection(response.data.token);
+			if (window.localStorage){
+				localStorage.setItem('token', JSON.stringify(response.data.token));
+				localStorage.setItem('user', JSON.stringify(response.data.user));
+			}
 	        context.errors = null;
 	        context.$store.dispatch('setToken', response.data.token);
 	        context.$store.dispatch('setUser', response.data.user);
-	        var socket = getConnection(response.data.token);
-	        context.$store.dispatch('setSocket', getConnection(response.data.token));
-
-	        console.log('auth v', s.connected, s.id)
+	        context.$store.dispatch('setSocket', socket);
 	    }).catch(e => {
-	        context.errors = e.response.data.error;
+	    	if (e.response.data.error){
+	    		context.errors = e.response.data.error;
+	    	} else {
+	    		console.error(e);
+	    	}
 	    });
 	},
 	register(context, credentials){
 
 	},
 	logout(context){
-
+      	var socket = context.$store.getters.getSocket;
+      	if (socket){
+      		socket.disconnect();
+			socket.removeAllListeners();
+			if (window.localStorage){
+				localStorage.removeItem('token');
+				localStorage.removeItem('user');
+			}
+        	context.$store.dispatch('logout');
+      	}
 	},
-	checkAuth(context){
-
+	initialState(context){
+		if (localStorage.getItem('token')){
+			var token = JSON.parse(localStorage.getItem('token'));
+			var user = JSON.parse(localStorage.getItem('user'));
+			var socket = getConnection(token);
+			context.$store.dispatch('initialState', { token: token, socket: socket, user: user });
+		}
 	}
 }

@@ -28,7 +28,7 @@
 <script>
 
 import { Event } from '../events';
-import * as CONFIG from '../config.js'
+import service from '../services'
 
 export default {
   name: 'Navigation',
@@ -39,12 +39,9 @@ export default {
   },
   methods: {
     logout(){
-      // this.$socket.emit('logout');
-      var s = this.$store.getters.getSocket;
-      if (s){
-        console.log('auth out', s.connected, s.id)
-        this.$store.dispatch('logout');
-      }
+
+      service.logout(this)
+
     }
   },
   computed: {

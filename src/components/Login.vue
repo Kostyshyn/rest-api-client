@@ -14,9 +14,7 @@
 
 <script>
 
-import axios from 'axios'
-import * as CONFIG from '../config.js'
-import { getConnection } from '../socket/'
+import service from '../services'
 
 export default {
   name: 'Login',
@@ -25,33 +23,17 @@ export default {
       msg: 'Login',
       userInput: '',
       password: '',
-      user: null,
       errors: null
     }
   },
   methods: {
     login(){
-      let uri = CONFIG.ROOT_URI + '/login';
-      axios.post(uri, {
+
+      service.login(this, {
         userInput: this.userInput,
-        password: this.password,
-      }).then(response => {
-        this.user = response.data.user;
-        this.errors = null;
-        this.$store.dispatch('setToken', response.data.token);
-        this.$store.dispatch('setUser', response.data.user);
+        password: this.password
+      });
 
-        var s = getConnection(response.data.token);
-
-        this.$store.dispatch('setSocket', s);
-
-        console.log('auth v', s.connected, s.id)
-        // this.$socket.emit('authenticate', response.data.token);
-
-        // getConnection(response.data.token);
-      }).catch(e => {
-        this.errors = e.response.data.error;
-      })
     }
   },
   created(){

@@ -8,11 +8,9 @@ import { sync } from 'vuex-router-sync'
 import store from '@/store'
 import socketio from 'socket.io-client'
 import * as CONFIG from './config.js'
-
-// export const SocketInstance = socketio(CONFIG.ROOT_URI);
+import service from './services'
 
 Vue.use(Vuex)
-// Vue.use(VueSocketIO, SocketInstance)
 
 sync(store, router)
 
@@ -26,6 +24,6 @@ new Vue({
   components: { App },
   template: '<App/>',
   beforeCreate(){
-    this.$store.commit('initializeCurrentState');
+    service.initialState(this);
   }
 })
