@@ -13,16 +13,16 @@ export default {
       msg: null
     }
   },
-  sockets: {
-    message(val){
-      console.log(val);
-    }
-  },
   methods: {
     click(){
-      if (this.$socket){
-        this.$socket.emit('send.message', this.msg);
+      if (this.socket){
+        this.socket.emit('send.message', this.msg);
       }
+    }
+  },
+  computed: {
+    socket(){
+      return this.$store.getters.getSocket;
     }
   },
   created(){

@@ -14,8 +14,7 @@
 
 <script>
 
-import axios from 'axios'
-import * as CONFIG from '../config.js'
+import service from '../services'
 
 export default {
   name: 'Login',
@@ -24,33 +23,17 @@ export default {
       msg: 'Login',
       userInput: '',
       password: '',
-      user: null,
       errors: null
     }
   },
   methods: {
     login(){
-      let isLogged = this.$store.getters.getCurrentState.isUserLoggedIn;
-      if (!isLogged){
-        let uri = CONFIG.ROOT_URI + '/login';
-        axios.post(uri, {
-          userInput: this.userInput,
-          password: this.password,
-        }).then(response => {
-          this.user = response.data.user;
-          this.errors = null;
-          this.$store.dispatch('setToken', response.data.token);
-          this.$store.dispatch('setUser', response.data.user);
 
-          console.log(this.$socket.connected);
-          // this.$socket.emit('authenticate', response.data.token);
+      service.login(this, {
+        userInput: this.userInput,
+        password: this.password
+      });
 
-        }).catch(e => {
-          this.errors = e.response.data.error;
-        });
-      } else {
-        alert('You are already logged in')
-      }
     }
   },
   created(){
