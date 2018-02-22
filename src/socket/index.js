@@ -8,8 +8,8 @@ function getConnection(token){
 		socket.emit('authenticate', {
 			token: token
 		}).on('authenticated', function(){
-			// console.log('auth s', socket.connected, socket.id)
 
+			// already authenticated
 
 		});
 
