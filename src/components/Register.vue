@@ -46,15 +46,7 @@ export default {
       }).catch(e => {
         this.errors = e.response.data.error;
       })
-
-      // axios.get(`http://jsonplaceholder.typicode.com/posts`)
-      // .then(response => {
-      //   // JSON responses are automatically parsed.
-      //   console.log(response.data)
-      // })
-      // .catch(e => {
-      //   this.errors.push(e)
-      // })
+      
     }
   }
 }

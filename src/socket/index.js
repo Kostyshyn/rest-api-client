@@ -10,14 +10,18 @@ function getConnection(token){
 		socket.emit('authenticate', {
 			token: token
 		}).on('authenticated', function(){
-			
-			console.log('auth s', socket.connected, socket.id)
+
+		// already authenticated
 
 		});
 
 		socket.on('message', function(val){
 			console.log(val)
-		})
+		});
+
+		socket.on('notification', function(note){
+			console.log(note);
+		});
 
 		socket.on('unauthorized', function(error, callback) {
   			if (error.data.type == "UnauthorizedError" || error.data.code == "invalid_token") {
