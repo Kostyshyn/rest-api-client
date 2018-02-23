@@ -20,7 +20,11 @@
     </div>
     <div v-if="isUserLoggedIn">
       <a href="#" @click="logout">Logout</a> 
-      <a href="#"></a>      
+      <router-link
+      to="profile"
+      class=""
+      active-class="active"
+      >Profile</router-link>     
     </div>
   </div>
 </template>

@@ -16,7 +16,7 @@ function getConnection(token){
 		});
 
 		socket.on('message', function(val){
-			console.log(val)
+			console.log(val);
 		});
 
 		socket.on('notification', function(note){

@@ -27,3 +27,17 @@ new Vue({
     service.initialState(this);
   }
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)){
+    if (!store.state.isUserLoggedIn){
+      next({
+        path: '/login'
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+})
