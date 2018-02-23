@@ -65,6 +65,9 @@ export default new Vuex.Store({
 		},
 		getSocket(state, getters){
 			return state.socket;
+		},
+		getUser(state, getters){
+			return state.user;
 		}
 	}
 })

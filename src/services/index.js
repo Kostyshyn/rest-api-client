@@ -7,7 +7,7 @@ export default {
 		authenticated: false
 	},
 	login(context, credentials){
-		let uri = CONFIG.ROOT_URI + '/login';
+		let uri = CONFIG.ROOT_URI + '/api/login';
 		axios.post(uri, credentials).then(response => {
 			var socket = getConnection(response.data.token);
 			if (window.localStorage){
@@ -18,6 +18,7 @@ export default {
 	        context.$store.dispatch('setToken', response.data.token);
 	        context.$store.dispatch('setUser', response.data.user);
 	        context.$store.dispatch('setSocket', socket);
+	        context.$router.push('/profile');
 	    }).catch(e => {
 	    	if (e.response.data.error){
 	    		context.errors = e.response.data.error;
@@ -39,6 +40,7 @@ export default {
 				localStorage.removeItem('user');
 			}
         	context.$store.dispatch('logout');
+        	context.$router.push('/');
       	}
 	},
 	initialState(context){
@@ -48,5 +50,8 @@ export default {
 			var socket = getConnection(token);
 			context.$store.dispatch('initialState', { token: token, socket: socket, user: user });
 		}
+	},
+	checkAuth(){
+		
 	}
 }

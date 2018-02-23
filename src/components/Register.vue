@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     register(){
-      let uri = CONFIG.ROOT_URI + '/register';
+      let uri = CONFIG.ROOT_URI + '/api/register';
       axios.post(uri, {
         username: this.username,
         password: this.password,
