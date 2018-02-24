@@ -14,12 +14,12 @@
     >Users</router-link>
     <div v-if="!isUserLoggedIn">
       <router-link
-      to="login"
+      to="/login"
       class=""
       active-class="active"
       >Login</router-link>
       <router-link
-      to="register"
+      to="/register"
       class=""
       active-class="active"
       >Register</router-link>
@@ -27,7 +27,7 @@
     <div v-if="isUserLoggedIn">
       <a href="#" @click="logout">Logout</a> 
       <router-link
-      to="profile"
+      to="/profile"
       class=""
       active-class="active"
       >Profile</router-link>     

@@ -28,7 +28,21 @@ export default {
 	    });
 	},
 	register(context, credentials){
-
+      	let uri = CONFIG.ROOT_URI + '/api/register';
+      	axios.post(uri, credentials).then(response => {
+			var socket = getConnection(response.data.token);
+			if (window.localStorage){
+				localStorage.setItem('token', JSON.stringify(response.data.token));
+				localStorage.setItem('user', JSON.stringify(response.data.user));
+			}
+	        context.errors = null;
+	        context.$store.dispatch('setToken', response.data.token);
+	        context.$store.dispatch('setUser', response.data.user);
+	        context.$store.dispatch('setSocket', socket);
+	        context.$router.push('/profile');
+      	}).catch(e => {
+        	this.errors = e.response.data.error;
+      	})
 	},
 	logout(context){
       	var socket = context.$store.getters.getSocket;

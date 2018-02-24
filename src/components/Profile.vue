@@ -1,29 +1,47 @@
 <template>
-  <div>
+  <div v-if="user">
     Profile
-
-    {{ user.username }}
+    <h2>{{ user.username }}</h2>
+    <hr>
+    <em>followers: {{ user.followers.length }}</em>
+    <br>
+    <em>following: {{ user.follows.length }}</em>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+import * as CONFIG from '../config.js'
+
 export default {
   name: 'Profile',
   data(){
     return {
-      
+      user: null
     }
   },
   methods: {
-
+    getUser(){
+      let uri = CONFIG.ROOT_URI + '/api/users/' + this.href;
+      axios.get(uri).then(response => {
+        // console.log(response.data.user);
+        this.user = response.data.user;
+      }).catch(e => {
+        if (e.response.data.errors){
+          this.errors = e.response.data.errors;
+        } else {
+          console.error(e);
+        }
+      });
+    },
   },
   computed: {
-    user(){
-      return this.$store.getters.getUser;
+    href(){
+      return this.$store.getters.getUser.href;
     }
   },
   created(){
-
+    this.getUser();
   }
 }
 </script>

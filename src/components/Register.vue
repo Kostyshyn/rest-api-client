@@ -16,8 +16,7 @@
 
 <script>
 
-import axios from 'axios'
-import * as CONFIG from '../config.js'
+import service from '../services'
 
 export default {
   name: 'Register',
@@ -33,19 +32,12 @@ export default {
   },
   methods: {
     register(){
-      let uri = CONFIG.ROOT_URI + '/api/register';
-      axios.post(uri, {
-        username: this.username,
-        password: this.password,
-        email: this.email
-      }).then(response => {
-        this.user = response.data.user;
-        this.errors = null;
-        this.$store.dispatch('setToken', response.data.token);
-        this.$store.dispatch('setUser', response.data.user);
-      }).catch(e => {
-        this.errors = e.response.data.error;
-      })
+
+      service.register(this, {
+        username: this .username,
+        email: this.email,
+        password: this.password
+      });
       
     }
   }

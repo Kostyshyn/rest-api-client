@@ -29,17 +29,14 @@ export default {
   methods: {
     getAllUsers(){
       let uri = CONFIG.ROOT_URI + '/api/users';
-      console.log('uri', uri);
       axios.get(uri).then(response => {
         this.users = response.data.users;
-        console.log(response.data.users);
       }).catch(e => {
-        console.log(e);
-        // if (e.response.data.errors){
-        //   this.errors = e.response.data.errors;
-        // } else {
-        //   console.error(e);
-        // }
+        if (e.response.data.errors){
+          this.errors = e.response.data.errors;
+        } else {
+          console.error(e);
+        }
       });
 
       // var token = this.$store.getters.getToken;

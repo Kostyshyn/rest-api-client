@@ -3,7 +3,7 @@
     <div v-if="user">
       <h4>{{ user.username }}</h4>
       <em>followers: {{ user.followers.length }}</em>
-      <!-- <em>following: {{ user.follows.length }}</em> -->
+      <em>following: {{ user.follows.length }}</em>
       <br>
       <button @click="follow">{{ followStatus }}</button>
     </div>
