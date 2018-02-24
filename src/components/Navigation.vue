@@ -6,6 +6,12 @@
     active-class="active"
     exact
     >Home</router-link>
+    <router-link
+    to="/users"
+    class=""
+    active-class="active"
+    exact
+    >Users</router-link>
     <div v-if="!isUserLoggedIn">
       <router-link
       to="login"
