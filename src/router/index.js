@@ -1,6 +1,8 @@
 // general
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '@/store'
+
 import Home from '@/components/Home'
 import Profile from '@/components/Profile'
 // user
@@ -45,7 +47,16 @@ export default new Router({
       path: '/users/:href',
       name: 'User',
       component: User,
-      props: true
+      props: true,
+      beforeEnter: (to, from, next) => {
+        var currentUserHref = store.getters.getUser ? store.getters.getUser.href : null;
+        var userHref = to.params.href;
+        if (currentUserHref && currentUserHref == userHref){
+          next('/profile');
+        } else {
+          next();
+        }
+      }
     }
   ]
 })

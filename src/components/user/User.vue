@@ -57,7 +57,7 @@ export default {
             }
         });
       } else {
-        alert('You must login for follow');
+        this.$router.push('/login');
       }
     }
   },
