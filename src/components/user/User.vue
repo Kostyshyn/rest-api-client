@@ -43,8 +43,8 @@ export default {
     follow(){
       let uri = CONFIG.ROOT_URI + '/api/users/' + this.href + '/follow';
       if (this.$store.getters.getCurrentState.isUserLoggedIn){
-        var follower = this.$store.getters.getUser.id;
-        axios.post(uri, { follower: follower }).then(response => {
+        var token = this.$store.getters.getToken;
+        axios.post(uri, { token: token }).then(response => {
           this.errors = null;
           this.user = null;
           this.user = response.data.user;
@@ -57,7 +57,7 @@ export default {
             }
         });
       } else {
-        alert('You must login for follow');
+        this.$router.push('/login');
       }
     }
   },
