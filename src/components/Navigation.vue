@@ -4,7 +4,7 @@
       <b-row>
   
         
-        <b-col lg="9">
+        <b-col lg="9" md="7" sm="7">
           <div class="page-links">
             
             <ul>
@@ -25,28 +25,27 @@
             
           </div>
         </b-col>
-        <b-col lg="3" v-if="!isUserLoggedIn">
+        <b-col lg="3" md="5" sm="5" v-if="!isUserLoggedIn">
 
           <div class="auth-links">
           
             <ul>
               <li>
-                <router-link
-                to="/login"
-                class=""
-                >Login</router-link>
+                <button class="button" @click="showLoginModal">
+                  Login
+                </button>
               </li>
               <li>
                 <router-link
                 to="/register"
-                class=""
+                class="button main-button"
                 >Register</router-link>                
               </li>
             </ul>
       
           </div>
         </b-col>
-        <b-col lg="3" v-if="isUserLoggedIn">
+        <b-col lg="3" md="5" sm="5" v-if="isUserLoggedIn">
 
           <div class="user-links">
             
@@ -68,6 +67,20 @@
 
       </b-row>
     </b-container>
+    <modal name="login" :width="350" height="auto">
+      <div class="login-modal">
+        <h1>Login</h1>
+        <form action="" @submit.prevent="login">
+          <input type="text" placeholder="username or email" v-model="userInput">
+          <br>
+          <input type="password" placeholder="password" v-model="password">
+          <button type="submit" class="button main-button">Login</button>
+        </form>
+        <ul v-if="loginErrors">
+          <li v-for="e in loginErrors">{{ e.message }}</li>
+        </ul>
+      </div>
+    </modal>
   </div>
 </template>
 
@@ -80,13 +93,29 @@ export default {
   name: 'Navigation',
   data(){
     return {
-      user: null
+      user: null,
+      loginErrors: null,
+      userInput: '',
+      password: '',
     }
   },
   methods: {
     logout(){
 
       service.logout(this)
+
+    },
+    login(){
+
+      service.login(this, {
+        userInput: this.userInput,
+        password: this.password
+      });
+
+    },
+    showLoginModal () {
+
+      this.$modal.show('login');
 
     }
   },

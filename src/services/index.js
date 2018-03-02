@@ -14,14 +14,15 @@ export default {
 				localStorage.setItem('token', JSON.stringify(response.data.token));
 				localStorage.setItem('user', JSON.stringify(response.data.user));
 			}
-	        context.errors = null;
+	        context.loginErrors = null;
 	        context.$store.dispatch('setToken', response.data.token);
 	        context.$store.dispatch('setUser', response.data.user);
 	        context.$store.dispatch('setSocket', socket);
-	        context.$router.push('/profile');
+	        context.$modal.hide('login');
+	        // context.$router.push('/profile');
 	    }).catch(e => {
 	    	if (e.response.data.error){
-	    		context.errors = e.response.data.error;
+	    		context.loginErrors = e.response.data.error;
 	    	} else {
 	    		console.error(e);
 	    	}
