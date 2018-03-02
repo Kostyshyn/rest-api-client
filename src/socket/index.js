@@ -25,9 +25,9 @@ function getConnection(token){
 
 		socket.on('unauthorized', function(error, callback) {
   			if (error.data.type == "UnauthorizedError" || error.data.code == "invalid_token") {
-    			// redirect user to login page perhaps or execute callback: 
+    			// redirect user to login page perhaps or execute callback:
     			callback();
-    			console.log("User's token has expired unauth");
+    			console.log('User\'s token has expired unauth');
   			}
 		});
 	})

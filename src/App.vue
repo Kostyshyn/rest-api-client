@@ -2,7 +2,15 @@
   <div id="app">
     <!-- <img src="./assets/logo.png"> -->
     <navigation />
-    <router-view/>
+    <div class="page">
+    	<b-container>
+		    <transition name="fade" mode="out-in">
+
+				<router-view></router-view>
+				
+		    </transition>
+	    </b-container>
+    </div>
   </div>
 </template>
 
@@ -18,8 +26,8 @@ export default {
 }
 </script>
 
-<style>
-#app {
+<style lang="scss">
+	@import "./assets/scss/style.scss"
 
-}
+
 </style>

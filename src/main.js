@@ -9,12 +9,16 @@ import store from '@/store'
 import socketio from 'socket.io-client'
 import * as CONFIG from './config.js'
 import service from './services'
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-Vue.use(Vuex)
+Vue.use(Vuex);
+Vue.use(BootstrapVue);
 
-sync(store, router)
+sync(store, router);
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 new Vue({

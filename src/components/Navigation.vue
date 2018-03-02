@@ -1,37 +1,73 @@
 <template>
-  <div>
-    <router-link
-    to="/"
-    class=""
-    active-class="active"
-    exact
-    >Home</router-link>
-    <router-link
-    to="/users"
-    class=""
-    active-class="active"
-    exact
-    >Users</router-link>
-    <div v-if="!isUserLoggedIn">
-      <router-link
-      to="/login"
-      class=""
-      active-class="active"
-      >Login</router-link>
-      <router-link
-      to="/register"
-      class=""
-      active-class="active"
-      >Register</router-link>
-    </div>
-    <div v-if="isUserLoggedIn">
-      <a href="#" @click="logout">Logout</a> 
-      <router-link
-      to="/profile"
-      class=""
-      active-class="active"
-      >Profile</router-link>     
-    </div>
+  <div class="navigation-top box">
+    <b-container>
+      <b-row>
+  
+        
+        <b-col lg="9">
+          <div class="page-links">
+            
+            <ul>
+              <li>
+                <router-link
+                to="/"
+                class=""
+                exact
+                >Home</router-link>                
+              </li>
+              <li>
+                <router-link
+                to="/users"
+                class=""
+                >Users</router-link>
+              </li>
+            </ul>
+            
+          </div>
+        </b-col>
+        <b-col lg="3" v-if="!isUserLoggedIn">
+
+          <div class="auth-links">
+          
+            <ul>
+              <li>
+                <router-link
+                to="/login"
+                class=""
+                >Login</router-link>
+              </li>
+              <li>
+                <router-link
+                to="/register"
+                class=""
+                >Register</router-link>                
+              </li>
+            </ul>
+      
+          </div>
+        </b-col>
+        <b-col lg="3" v-if="isUserLoggedIn">
+
+          <div class="user-links">
+            
+            <ul>
+              <li>
+                <a href="#" @click="logout">Logout</a>
+              </li>
+              <li>
+                <router-link
+                to="/profile"
+                class=""
+                >Profile</router-link>
+              </li>
+            </ul> 
+                        
+          </div>
+
+        </b-col>
+
+      </b-row>
+    </b-container>
   </div>
 </template>
 
@@ -67,7 +103,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 h1, h2 {
   font-weight: normal;
 }
