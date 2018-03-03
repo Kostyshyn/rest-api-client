@@ -57,7 +57,7 @@ export default {
             }
         });
       } else {
-        this.$router.push('/login');
+        this.$modal.show('login');
       }
     }
   },
