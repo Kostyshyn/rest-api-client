@@ -32,6 +32,9 @@
       </div>
       <ul class="mobile-user-links" v-if="isUserLoggedIn">
         <li>
+          <a href="#" @click="logout">Logout</a>
+        </li>
+        <li>
           <router-link
             to="/profile"
             class=""
@@ -76,6 +79,11 @@ export default {
     }
   },
   methods: {
+    logout(){
+
+      service.logout(this)
+
+    },
     toggle(){
       this.navbarOpen = !this.navbarOpen;
     },
