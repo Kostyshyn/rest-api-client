@@ -1,7 +1,9 @@
 <template>
   <div id="app">
-    <!-- <img src="./assets/logo.png"> -->
+
     <navigation />
+    <mobile-navigation />
+
     <div class="page">
     	<b-container>
 		    <transition name="fade" mode="out-in">
@@ -17,11 +19,13 @@
 <script>
 
 import Navigation from '@/components/Navigation'
+import MobileNavigation from '@/components/MobileNavigation'
 
 export default {
   name: 'App',
   components: {
-    Navigation
+    Navigation,
+    MobileNavigation
   }
 }
 </script>

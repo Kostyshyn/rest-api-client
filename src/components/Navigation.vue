@@ -3,7 +3,6 @@
     <b-container>
       <b-row>
   
-        
         <b-col lg="9" md="7" sm="7">
           <div class="page-links">
             
@@ -50,6 +49,9 @@
           <div class="user-links">
             
             <ul>
+              <li class="notifications">
+                <span>{{ notifications.length }}</span>
+              </li>
               <li>
                 <a href="#" @click="logout">Logout</a>
               </li>
@@ -76,18 +78,19 @@
           <input type="password" placeholder="password" v-model="password">
           <button type="submit" class="button main-button">Login</button>
         </form>
-        <ul v-if="loginErrors">
+        <ul v-if="loginErrors" class="auth-errors">
           <li v-for="e in loginErrors">{{ e.message }}</li>
         </ul>
       </div>
     </modal>
   </div>
+
 </template>
 
 <script>
 
 import { Event } from '../events';
-import service from '../services'
+import service from '../services';
 
 export default {
   name: 'Navigation',
@@ -97,6 +100,7 @@ export default {
       loginErrors: null,
       userInput: '',
       password: '',
+      notifications: []
     }
   },
   methods: {
@@ -107,14 +111,22 @@ export default {
     },
     login(){
 
+      var w = window.innerWidth;
+      var mobile = false;
+      if ( w < 769 ){
+        mobile = true;
+      };
+
       service.login(this, {
         userInput: this.userInput,
         password: this.password
-      });
+      }, mobile);
 
     },
     showLoginModal () {
-
+      this.userInput = null;
+      this.password = null;
+      this.loginErrors = null;
       this.$modal.show('login');
 
     }
@@ -126,7 +138,10 @@ export default {
   },
   created(){
     // Event.$emit('event');
-    // Event.$on('event', /* handler */);
+    var self = this;
+    Event.$on('notification', function(note){
+      self.notifications.push(note);
+    });
   }
 }
 </script>

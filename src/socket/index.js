@@ -2,6 +2,7 @@
 import socketio from 'socket.io-client'
 // import VueSocketIO from 'vue-socket.io'
 import * as CONFIG from '../config.js'
+import { Event } from '../events';
 
 function getConnection(token){
 	const SocketInstance = socketio(CONFIG.ROOT_URI, { forceNew: true });	
@@ -20,6 +21,7 @@ function getConnection(token){
 		});
 
 		socket.on('notification', function(note){
+			Event.$emit('notification', note);
 			console.log(note);
 		});
 

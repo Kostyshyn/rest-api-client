@@ -6,7 +6,7 @@ export default {
 	user: {
 		authenticated: false
 	},
-	login(context, credentials){
+	login(context, credentials, mobile){
 		let uri = CONFIG.ROOT_URI + '/api/login';
 		axios.post(uri, credentials).then(response => {
 			var socket = getConnection(response.data.token);
@@ -18,7 +18,14 @@ export default {
 	        context.$store.dispatch('setToken', response.data.token);
 	        context.$store.dispatch('setUser', response.data.user);
 	        context.$store.dispatch('setSocket', socket);
-	        context.$modal.hide('login');
+	        if (mobile){
+      			context.$router.push('/profile');
+	      	} else {
+	      		context.$modal.hide('login');
+	      	}
+
+	        context.userInput = null;
+      		context.password = null;
 	        // context.$router.push('/profile');
 	    }).catch(e => {
 	    	if (e.response.data.error){
@@ -42,7 +49,7 @@ export default {
 	        context.$store.dispatch('setSocket', socket);
 	        context.$router.push('/profile');
       	}).catch(e => {
-        	this.errors = e.response.data.error;
+        	context.errors = e.response.data.error;
       	})
 	},
 	logout(context){
@@ -58,6 +65,30 @@ export default {
         	context.$router.push('/');
       	}
 	},
+    follow(context, mobile){
+      let uri = CONFIG.ROOT_URI + '/api/users/' + context.href + '/follow';
+      if (context.$store.getters.getCurrentState.isUserLoggedIn){
+        var token = context.$store.getters.getToken;
+        axios.post(uri, { token: token }).then(response => {
+          context.errors = null;
+          context.user = null;
+          context.user = response.data.user;
+          // response.data.user
+        }).catch(e => {
+            if (e.response.data.error){
+              context.errors = e.response.data.error;
+            } else {
+              console.error(e);
+            }
+        });
+      } else {
+      	if (mobile){
+      		context.$router.push('/login');
+      	} else {
+      		context.$modal.show('login');
+      	}
+      }
+    },
 	initialState(context){
 		if (localStorage.getItem('token')){
 			var token = JSON.parse(localStorage.getItem('token'));
