@@ -21,7 +21,7 @@ function getConnection(token){
 		});
 
 		socket.on('notification', function(note){
-			Event.$emit('notification', note);
+			// Event.$emit('notification', note);
 			console.log(note);
 		});
 
