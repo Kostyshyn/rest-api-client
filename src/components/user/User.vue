@@ -14,8 +14,10 @@
 </template>
 
 <script>
+
 import axios from 'axios'
 import * as CONFIG from '../../config.js'
+import service from '../../services'
 
 export default {
   name: 'User',
@@ -41,24 +43,12 @@ export default {
       });
     },
     follow(){
-      let uri = CONFIG.ROOT_URI + '/api/users/' + this.href + '/follow';
-      if (this.$store.getters.getCurrentState.isUserLoggedIn){
-        var token = this.$store.getters.getToken;
-        axios.post(uri, { token: token }).then(response => {
-          this.errors = null;
-          this.user = null;
-          this.user = response.data.user;
-          // response.data.user
-        }).catch(e => {
-            if (e.response.data.error){
-              this.errors = e.response.data.error;
-            } else {
-              console.error(e);
-            }
-        });
-      } else {
-        this.$router.push('/login');
-      }
+      var w = window.innerWidth;
+      var mobile = false;
+      if ( w < 769 ){
+        mobile = true;
+      };
+      service.follow(this, mobile);
     }
   },
   computed: {
@@ -67,6 +57,7 @@ export default {
         var follows = this.user.followers;
         var follower = this.$store.getters.getUser;
         var status = isFollow(follows, follower);
+        console.log(status)
         return status ? 'Unfollow' : 'Follow';
       } else {
         return 'Follow';
@@ -81,6 +72,7 @@ export default {
 function isFollow(followers, follows){ // array of followers and follows object
   var found = false;
   for (var i = 0; i < followers.length; i++){
+    console.log(followers[i]._id, follows.id);
     if (followers[i]._id == follows.id){
       found = true;
       break;

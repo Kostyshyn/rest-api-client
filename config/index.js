@@ -1,6 +1,7 @@
 'use strict'
 // Template version: 1.3.1
 // see http://vuejs-templates.github.io/webpack for documentation.
+var os = require('os') // os.networkInterfaces().wlan0[0].address
 const path = require('path')
 
 module.exports = {
