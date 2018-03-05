@@ -26,6 +26,17 @@ body {
 	user-select: none;
 	-webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }
+.text-wrapping {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -ms-word-break: break-all;
+    word-break: break-word;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
 .box {
 	box-shadow: 0px 3px 25px 0px rgba(46,61,73,0.2);
 }
