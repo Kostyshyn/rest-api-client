@@ -3,39 +3,31 @@
     <b-col lg="6" md="10" sm="12" offset-md="1" offset-lg="3" class="chat-column">
       <div class="chat">
         <div class="chat-header box">
-          
+          Username
+          <div class="last-seen-indicator">
+            last seen 2 h ago
+          </div>
         </div>
-        <div class="messages-wrapper">
-          <div class="messages">
-              <div class="from">
+        <div class="messages-wrapper" ref="messages-wrapper">
+          <div class="messages" v-if="messages" ref="messages">
+
+              <div v-for="message in messages" class="" :class="message.my ? 'from' : 'to' ">
                 <div class="message text-wrapping">
-                  Lorem ipsum dolor.
+                  {{ message.text }}
                 </div>
                 <span class="message-date">date</span>
               </div>
 
-              <div class="to">
-                <div class="message text-wrapping">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                </div>
-                <span class="message-date">date</span>
-              </div>
-              <div class="to">
-                <div class="message text-wrapping">
-                  Loremdfldvgbj;lgjbslfvsjdbfvl;jsdbvjlsdb
-                </div>
-                <span class="message-date">date</span>
-              </div>
-              <div class="from">
-                <div class="message text-wrapping">
-                  Lorem ipsum dolor.
-                </div>
-                <span class="message-date">date</span>
-              </div>
           </div>
         </div>
         <div class="chat-form">
-            <textarea-autosize   :min-height="40" :max-height="200" name="" id="" v-model="newMessageText"></textarea-autosize>
+            <textarea-autosize   
+            :min-height="40" 
+            :max-height="200" 
+            name="" id="" 
+            v-model="newMessageText" 
+            placeholder="Write message ..."
+            @keydown.native="send"></textarea-autosize>
             <div class="send-message-wrapper">
               <button class="send-message" @click="send"><icon name="angle-right"></icon></button>
             </div>
@@ -49,11 +41,21 @@
 
 import Icon from 'vue-awesome/components/Icon'
 
+
 export default {
   name: 'Chat',
   data(){
     return {
-      messages: null,
+      messages: [
+        { my: true, text: 'wgferg' },
+        { my: false, text: 'wgferg' },
+        { my: true, text: 'wgferg' },
+        { my: false, text: 'wgferg' },
+        { my: true, text: 'wgferg' },
+        { my: false, text: 'wgferg' },
+        { my: true, text: 'wgferg' },
+        { my: false, text: 'wgferg' }
+      ],
       users: null,
       newMessageText: null
     }
@@ -62,16 +64,37 @@ export default {
     Icon
   },
   methods: {
-    send(){
-      console.log(this.newMessageText);
-      this.newMessageText = null;
+    send(e){
+      if (!e.shiftKey && e.keyCode == 13 || e.type == 'click'){
+        e.preventDefault();
+        var self = this;
+        if (this.newMessageText != null && this.newMessageText.trim() != ''){
+          this.messages.push({
+            my: true,
+            text: this.newMessageText
+          });
+          this.scroll();
+          this.newMessageText = null;
+        }
+      }
+    },
+    scroll(){
+      var self =  this;
+      setTimeout(function(){
+        $(self.$refs['messages-wrapper']).animate({
+          scrollTop: self.$refs['messages-wrapper'].scrollHeight
+        }, 500);
+
+        // self.$refs['messages-wrapper'].scrollTop = self.$refs['messages-wrapper'].scrollHeight;
+
+      }, 0);
     }
   },
   computed: {
 
   },
   created(){
-   
+    this.scroll();
   }
 }
 </script>
@@ -86,14 +109,34 @@ export default {
   padding: 0px;
 }
 .chat-header {
-  height: 50px;
+  min-height: 50px;
+  height: auto;
   width: 100%;
   background-color: #fff;
+  padding: 15px;
+  position: relative;
+}
+.last-seen-indicator {
+  padding: 5px 0px 0px 0px;
+  text-align: center;
+  font-size: 14px;
+  color: #737373;
+  font-weight: bold;
+  position: absolute;
+  top: 60px;
+  opacity: .6;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
 }
 .messages-wrapper {
   height: calc(100vh - 207px);
   overflow-y: auto;
   border-left: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+/*  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;*/
 }
 .messages {
   padding: 15px;
@@ -102,7 +145,6 @@ export default {
   height: auto;
 }
 .message {
-  width: ;
   display: inline-block;
   height: auto;
   padding: 7px 12px 5px 12px;
@@ -111,7 +153,8 @@ export default {
   color: #737373;
   font-size: 14px;
   margin: 10px 0px 0px 0px;
-  border-radius: 15px;
+  border-radius: 10px;
+  transition: all .3s ease;
 }
 .from .message-date,
 .to .message-date {
@@ -210,8 +253,9 @@ export default {
   }
 }
 @media screen and (max-width: 575px){
-  .messages {
+  .messages-wrapper {
     border-left: none;
+    border-right: none;
   }
   .message {
     padding: 7px 12px 5px 12px;
