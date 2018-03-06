@@ -6,6 +6,13 @@
       <em>following: {{ user.follows.length }}</em>
       <br>
       <button @click="follow">{{ followStatus }}</button>
+      <br>
+      <hr>
+      <router-link
+        :to="{ path: `/users/${ user.href }/chat` }"
+        class=""
+        exact
+      >chat with {{ user.username }}</router-link> 
     </div>
     <div v-if="errors" v-for="error in errors">
       {{ error.message }}

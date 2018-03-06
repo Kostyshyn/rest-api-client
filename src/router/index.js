@@ -8,7 +8,7 @@ import Profile from '@/components/Profile'
 // user
 import UsersAll from '@/components/user/UsersAll'
 import User from '@/components/user/User'
-import Chat from '@/components/user/Chat'
+import Chat from '@/components/user/chat/Chat'
 // auth
 import Register from '@/components/Register'
 import Login from '@/components/Login'
@@ -47,6 +47,21 @@ export default new Router({
       path: '/users/:href',
       name: 'User',
       component: User,
+      props: true,
+      beforeEnter: (to, from, next) => {
+        var currentUserHref = store.getters.getUser ? store.getters.getUser.href : null;
+        var userHref = to.params.href;
+        if (currentUserHref && currentUserHref == userHref){
+          next('/profile');
+        } else {
+          next();
+        }
+      }
+    },
+    {
+      path: '/users/:href/chat',
+      name: 'Chat',
+      component: Chat,
       props: true,
       beforeEnter: (to, from, next) => {
         var currentUserHref = store.getters.getUser ? store.getters.getUser.href : null;
