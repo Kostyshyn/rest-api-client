@@ -147,7 +147,7 @@ export default {
 .message {
   display: inline-block;
   height: auto;
-  padding: 7px 12px 5px 12px;
+  padding: 5px 12px 5px 12px;
   line-height: 18px;
   font-weight: bold;
   color: #737373;
