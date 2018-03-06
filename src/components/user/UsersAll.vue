@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="users-wrapper">
     <h3>All users</h3>
     <ul v-if="users">
       <li v-for="user in users">

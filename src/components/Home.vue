@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="main-page">
     <input type="text" v-model="msg">
     <button @click="click">send</button>
     <ul v-if="users">

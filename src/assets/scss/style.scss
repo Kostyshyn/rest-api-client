@@ -93,6 +93,7 @@ body {
 }
  /*navigation*/
 .navigation-top {
+	background-color: #fff;
     height: 80px;
     width: 100%;
     position: fixed;
@@ -284,13 +285,23 @@ body {
 
 /*pages*/
 .page {
-	padding-top: 100px;
+	padding-top: 80px;
+}
+
+.main-page,
+.user-wrapper,
+.users-wrapper {
+	padding: 20px 0px;
+}
+
+.v--modal-overlay .v--modal-box {
+	top: 300px !important;
 }
 .login-modal,
 .login-form,
 .register-form {
 	background-color: #fff;
-	padding: 20px;
+	padding: 40px 20px 20px 20px;
 	input {
 		width: 100%;
 	    height: 38px;
@@ -315,6 +326,29 @@ ul.auth-errors {
 		color: #ff8b94;
 	}
 }
+.login-modal {
+	padding-top: 20px;
+}
+
+/*chat*/
+
+.messages-wrapper {
+  &::-webkit-scrollbar-track
+  {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+  }
+
+  &::-webkit-scrollbar
+  {
+    width: 5px;
+    background-color: #f5f5f5;
+  }
+
+  &::-webkit-scrollbar-thumb
+  {
+    background-color: #d6d6d6;
+  }
+}
 
 @media screen and (max-width: 768px) {
 	.navigation-top {
@@ -324,6 +358,6 @@ ul.auth-errors {
 		display: flex;
 	}
 	.page {
-		padding-top: 80px;
+		padding-top: 60px;
 	}
 }

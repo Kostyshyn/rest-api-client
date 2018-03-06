@@ -26,6 +26,9 @@ export default {
   components: {
     Navigation,
     MobileNavigation
+  },
+  created(){
+
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="user-wrapper">
     <div v-if="user">
       <h4>{{ user.username }}</h4>
       <em>followers: {{ user.followers.length }}</em>
