@@ -129,9 +129,6 @@ export default {
           $(self.$refs['messages-wrapper']).animate({
             scrollTop: self.$refs['messages-wrapper'].scrollHeight
           }, 500);
-
-          // self.$refs['messages-wrapper'].scrollTop = self.$refs['messages-wrapper'].scrollHeight;
-
         }, 0);
       }
     },
@@ -142,22 +139,18 @@ export default {
           var messagesWrapper = self.$refs['messages-wrapper'];
           var messages = self.$refs['messages'];
           $(messagesWrapper).on('scroll', function(e){
-            // console.log($(messagesWrapper).scrollTop(), $(messages).height());
             if ($(messagesWrapper).scrollTop() == 0){
-              self.loadMessages($(messages).height());
+              self.loadMessages();
             }
           });
-
-          // self.$refs['messages-wrapper'].scrollTop = self.$refs['messages-wrapper'].scrollHeight;
-
         }, 0);
       }      
     },
-    loadMessages(h){
+    loadMessages(){
       var href = this.$route.params.href;
       var token = this.$store.getters.getToken;
       if (token && href && this.page != null){
-        this.loading = true;
+        // this.loading = true;
         let uri = CONFIG.ROOT_URI + '/api/users/' + href + '/chat/messages';
         axios({
           url: uri,
@@ -172,19 +165,22 @@ export default {
           }
         }).then(response => {
           console.log(response.data)
-          // Array.prototype.unshift.apply(this.chat.messages, response.data.messages);
-          this.loading = false;
-          this.chat.messages.unshift.apply(this.chat.messages, response.data.messages);
+          // this.loading = false;
 
           var messagesWrapper = this.$refs['messages-wrapper'];
           var messages = this.$refs['messages'];
-          console.log(h, messagesWrapper.scrollHeight)
 
-          $(this.$refs['messages-wrapper']).animate({
-            scrollTop: messagesWrapper.scrollHeight
-          }, 0);
+          var h = $(messages).height();
 
+          this.chat.messages.unshift.apply(this.chat.messages, response.data.messages);
           this.page = response.data.page;
+
+          setTimeout(()=> {
+            $(this.$refs['messages-wrapper']).animate({
+              scrollTop: ($(messages).height() - h)
+            }, 0);
+          }, 0)
+
         }).catch(e => {
           if (e.response.data.error){
             this.errors = e.response.data.error;
@@ -216,9 +212,6 @@ export default {
             $(self.$refs['messages-wrapper']).animate({
               scrollTop: self.$refs['messages-wrapper'].scrollHeight
             }, 0);
-
-            // self.$refs['messages-wrapper'].scrollTop = self.$refs['messages-wrapper'].scrollHeight;
-
           }, 0);
         }).catch(e => {
           if (e.response.data.error){
