@@ -79,6 +79,7 @@ export default {
           this.chat.messages.push(newMessage);
           this.newMessageText = null;
           this.scroll();
+          this.delivered();
 
           var href = this.$route.params.href;
 
@@ -89,9 +90,11 @@ export default {
             created: newMessage.created,
             chat: this.chat._id
           }).then(response => {
+            this.errors = null;
             this.chat.messages.forEach(function(item){
               if (new Date(item.created).toISOString() == response.data.message.created){
                 console.log(item.message, 'done')
+
               }
             });
             // this.chat.messages.push(response.data.message);
@@ -118,6 +121,17 @@ export default {
 
         }, 0);
       }
+    },
+    delivered(){
+      var self = this;
+      setTimeout(function(){
+        self.chat.messages.forEach(function(item){
+          if (item.meta.done != undefined){
+            console.log(item.message, '!UNDELIVERED!')
+            item.message = item.message + ' !UNDELIVERED!';
+          }
+        })
+;      }, 4000);
     },
     getChat(){
       var href = this.$route.params.href;
