@@ -21,8 +21,11 @@ function getConnection(token){
 		});
 
 		socket.on('notification', function(note){
+			if (note.type == 'message'){
+				Event.$emit('message', note.payload);	
+			}
 			// Event.$emit('notification', note);
-			console.log(note);
+			// console.log(note);
 		});
 
 		socket.on('unauthorized', function(error, callback) {

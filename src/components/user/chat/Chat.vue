@@ -4,16 +4,17 @@
       <div class="chat" v-if="chat">
         <div class="chat-header box">
           {{ participant2.username }}
-          <div class="last-seen-indicator" v-if="!participant2.online">
-            last seen {{ moment(participant2.last_seen).fromNow() }}
-          </div>
+        </div>
+        <div class="last-seen-indicator" v-if="!participant2.online">
+          last seen {{ moment(participant2.last_seen).fromNow() }}
         </div>
         <div class="messages-wrapper" ref="messages-wrapper">
           <div class="messages" ref="messages">
             <div class="loader" v-if="loading" :class="{ active: loading }" >
               <img src="../../../assets/loader.gif" alt="loader">
             </div>
-              <div v-for="message in chat.messages" class="" :class="message.meta.user == participant2._id ? 'to' : 'from' ">
+              <div v-for="message in chat.messages" class="" 
+              :class="message.meta.user == participant2._id ? 'to' : 'from' "> 
                 <div class="message text-wrapping">
                   {{ message.message }}
                 </div>
@@ -52,6 +53,7 @@ import Icon from 'vue-awesome/components/Icon'
 import axios from 'axios'
 import * as CONFIG from '../../../config.js'
 import moment from 'moment'
+import { Event } from '../../../events';
 
 export default {
   name: 'Chat',
@@ -92,7 +94,6 @@ export default {
           this.newMessages.push(newMessage);
           this.newMessageText = null;
           this.scroll();
-          this.delivered();
 
           var href = this.$route.params.href;
 
@@ -129,7 +130,7 @@ export default {
         setTimeout(function(){
           $(self.$refs['messages-wrapper']).animate({
             scrollTop: self.$refs['messages-wrapper'].scrollHeight
-          }, 500);
+          }, 0);
         }, 0);
       }
     },
@@ -151,7 +152,7 @@ export default {
       var href = this.$route.params.href;
       var token = this.$store.getters.getToken;
       if (token && href && this.page != null){
-        // this.loading = true;
+        this.loading = true;
         let uri = CONFIG.ROOT_URI + '/api/users/' + href + '/chat/messages';
         axios({
           url: uri,
@@ -166,7 +167,7 @@ export default {
           }
         }).then(response => {
           console.log(response.data)
-          // this.loading = false;
+          this.loading = false;
 
           var messagesWrapper = this.$refs['messages-wrapper'];
           var messages = this.$refs['messages'];
@@ -261,6 +262,18 @@ export default {
   },
   created(){
     this.getChat();
+    var self = this;
+    Event.$on('message', function(message){
+      self.newMessages.push(message);
+      var s = $(self.$refs['messages']).height() - $(self.$refs['messages-wrapper']).scrollTop();
+      if (s < 1000){
+	      setTimeout(function(){
+	        $(self.$refs['messages-wrapper']).animate({
+	          scrollTop: self.$refs['messages-wrapper'].scrollHeight
+	        }, 0);
+	      }, 0);
+      }
+    });
   }
 }
 </script>
@@ -281,6 +294,7 @@ export default {
   background-color: #fff;
   padding: 15px;
   position: relative;
+  display: none;
 }
 .last-seen-indicator {
   padding: 5px 0px 0px 0px;
@@ -289,14 +303,14 @@ export default {
   color: #737373;
   font-weight: bold;
   position: absolute;
-  top: 60px;
+  top: 10px;
   opacity: .6;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
 }
 .messages-wrapper {
-  height: calc(100vh - 207px);
+  height: calc(100vh - 157px);
   overflow-y: auto;
   border-left: 1px solid #dee2e6;
   border-right: 1px solid #dee2e6;
@@ -358,14 +372,16 @@ export default {
   background-color: #d6d6d6;
   border: 2px solid #d6d6d6;
 }
+.to.unread {
+	background-color: #c1c1c1;
+}
 .from .message {
   background-color: #fff;
   border: 2px solid #41e4de;
-  text-align: right;
 }
 
 .chat-form {
-  /*position: fixed;*/
+  position: fixed;
   bottom: 0px;
   display: flex;
   padding: 15px;
@@ -433,7 +449,7 @@ export default {
     width: 540px;
   }
   .messages-wrapper {
-    height: calc(100vh - 187px);
+    height: calc(100vh - 190px);
   }
   .chat-form textarea {
     margin-right: 0px;
