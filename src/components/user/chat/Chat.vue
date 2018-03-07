@@ -1,21 +1,21 @@
 <template>
   <b-row>
     <b-col lg="6" md="10" sm="12" offset-md="1" offset-lg="3" class="chat-column">
-      <div class="chat">
+      <div class="chat" v-if="chat">
         <div class="chat-header box">
-          Username
-          <div class="last-seen-indicator">
-            last seen 2 h ago
+          {{ participant2.username }}
+          <div class="last-seen-indicator" v-if="!participant2.online">
+            last seen {{ moment(participant2.last_seen).fromNow() }}
           </div>
         </div>
         <div class="messages-wrapper" ref="messages-wrapper">
-          <div class="messages" v-if="messages" ref="messages">
+          <div class="messages" ref="messages">
 
-              <div v-for="message in messages" class="" :class="message.my ? 'from' : 'to' ">
+              <div v-for="message in chat.messages" class="" :class="message.meta.user == participant2._id ? 'to' : 'from' ">
                 <div class="message text-wrapping">
-                  {{ message.text }}
+                  {{ message.message }}
                 </div>
-                <span class="message-date">date</span>
+                <span class="message-date">{{ moment(message.created).calendar() }}</span>
               </div>
 
           </div>
@@ -40,24 +40,19 @@
 <script>
 
 import Icon from 'vue-awesome/components/Icon'
-
+import axios from 'axios'
+import * as CONFIG from '../../../config.js'
+import moment from 'moment'
 
 export default {
   name: 'Chat',
   data(){
     return {
-      messages: [
-        { my: true, text: 'wgferg' },
-        { my: false, text: 'wgferg' },
-        { my: true, text: 'wgferg' },
-        { my: false, text: 'wgferg' },
-        { my: true, text: 'wgferg' },
-        { my: false, text: 'wgferg' },
-        { my: true, text: 'wgferg' },
-        { my: false, text: 'wgferg' }
-      ],
+      chat: null,
       users: null,
-      newMessageText: null
+      newMessageText: null,
+      errors: null,
+      moment: moment
     }
   },
   components: {
@@ -65,36 +60,118 @@ export default {
   },
   methods: {
     send(e){
+      // this.scroll();
       if (!e.shiftKey && e.keyCode == 13 || e.type == 'click'){
         e.preventDefault();
         var self = this;
-        if (this.newMessageText != null && this.newMessageText.trim() != ''){
-          this.messages.push({
-            my: true,
-            text: this.newMessageText
-          });
-          this.scroll();
+        var token = this.$store.getters.getToken;
+        var user = this.$store.getters.getUser;
+        if (this.newMessageText != null && this.newMessageText.trim() != '' && token){
+
+          var newMessage = {
+            message: this.newMessageText,
+            created: Date.now(),
+            meta: {
+              user: user.id,
+              done: false
+            }
+          };
+          this.chat.messages.push(newMessage);
           this.newMessageText = null;
+          this.scroll();
+
+          var href = this.$route.params.href;
+
+          let uri = CONFIG.ROOT_URI + '/api/users/' + href + '/chat';
+          axios.post(uri, {
+            token: token,
+            message: newMessage.message,
+            created: newMessage.created,
+            chat: this.chat._id
+          }).then(response => {
+            this.chat.messages.forEach(function(item){
+              if (new Date(item.created).toISOString() == response.data.message.created){
+                console.log(item.message, 'done')
+              }
+            });
+            // this.chat.messages.push(response.data.message);
+            // this.scroll();
+          }).catch(e => {
+            if (e.response.data.error){
+              this.errors = e.response.data.error;
+            } else {
+              console.error(e);
+            }
+          });
         }
       }
     },
     scroll(){
-      var self =  this;
-      setTimeout(function(){
-        $(self.$refs['messages-wrapper']).animate({
-          scrollTop: self.$refs['messages-wrapper'].scrollHeight
-        }, 500);
+      if (this.chat){
+        var self =  this;
+        setTimeout(function(){
+          $(self.$refs['messages-wrapper']).animate({
+            scrollTop: self.$refs['messages-wrapper'].scrollHeight
+          }, 500);
 
-        // self.$refs['messages-wrapper'].scrollTop = self.$refs['messages-wrapper'].scrollHeight;
+          // self.$refs['messages-wrapper'].scrollTop = self.$refs['messages-wrapper'].scrollHeight;
 
-      }, 0);
+        }, 0);
+      }
+    },
+    getChat(){
+      var href = this.$route.params.href;
+      var token = this.$store.getters.getToken;
+      if (token && href){
+        let uri = CONFIG.ROOT_URI + '/api/users/' + href + '/chat';
+        axios({
+          url: uri,
+          method: 'get',
+          headers: {
+            'x-access-token': token,
+            'Content-Type': 'application/json'
+          }
+        }).then(response => {
+          this.chat = response.data.chat;
+          // console.log(response.data.chat);
+          // console.log(this.$store.getters.getUser.id, this.chat.participant1._id);
+          this.scroll();
+        }).catch(e => {
+          if (e.response.data.error){
+            this.errors = e.response.data.error;
+          } else {
+            console.error(e);
+          }
+        });
+      } else {
+        var w = window.innerWidth;
+        var mobile = false;
+        if ( w < 769 ){
+          mobile = true;
+        };
+        if (mobile){
+          this.$router.push('/login');
+        } else {
+          this.$modal.show('login');
+        }
+      }
     }
   },
   computed: {
-
+    participant2(){
+      if (this.chat){
+        var participant1 = this.$store.getters.getUser;
+        var participant2 = this.chat.participant2;
+        if (participant1.id == participant2._id){
+          return this.chat.participant1;
+        } else {
+          return this.chat.participant2;
+        }
+      }
+    }
   },
   created(){
-    this.scroll();
+    this.getChat();
   }
 }
 </script>
@@ -169,6 +246,9 @@ export default {
 }
 .from {
   align-self: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 .to .message {
   background-color: #d6d6d6;
@@ -181,7 +261,7 @@ export default {
 }
 
 .chat-form {
-  position: fixed;
+  /*position: fixed;*/
   bottom: 0px;
   display: flex;
   padding: 15px;
@@ -250,6 +330,12 @@ export default {
   }
   .messages-wrapper {
     height: calc(100vh - 187px);
+  }
+  .chat-form textarea {
+    margin-right: 0px;
+  }
+  .send-message {
+    display: none;
   }
 }
 @media screen and (max-width: 575px){

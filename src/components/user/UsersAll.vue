@@ -52,7 +52,7 @@ export default {
       //   this.users = response.data.users;
       // }).catch(e => {
       //   if (e.response.data.error){
-      //     context.errors = e.response.data.error;
+      //     this.errors = e.response.data.error;
       //   } else {
       //     console.error(e);
       //   }
