@@ -1,6 +1,6 @@
 <template>
   <b-row>
-    <b-col lg="6" md="10" sm="12" offset-md="1" offset-lg="3" class="chat-column">
+    <b-col lg="6" md="10" sm="12" offset-md="1" offset-lg="3" class="chat-column"> 
       <div class="chat" v-if="chat">
         <div class="chat-header box">
           {{ participant2.username }}
@@ -10,12 +10,21 @@
         </div>
         <div class="messages-wrapper" ref="messages-wrapper">
           <div class="messages" ref="messages">
-
+            <div class="loader" v-if="loading" :class="{ active: loading }" >
+              <img src="../../../assets/loader.gif" alt="loader">
+            </div>
               <div v-for="message in chat.messages" class="" :class="message.meta.user == participant2._id ? 'to' : 'from' ">
                 <div class="message text-wrapping">
                   {{ message.message }}
                 </div>
                 <span class="message-date">{{ moment(message.created).calendar() }}</span>
+              </div>
+
+              <div v-for="message in newMessages" class="" :class="message.meta.user == participant2._id ? 'to' : 'from' ">
+                <div class="message text-wrapping">
+                  {{ message.message }}
+                </div>
+                <span class="message-date"><span class="send-error" v-if="!message.meta.delivered" :class="{ error: message.meta.error }"></span>{{ moment(message.created).calendar() }}</span>
               </div>
 
           </div>
@@ -50,9 +59,12 @@ export default {
     return {
       chat: null,
       users: null,
+      newMessages: [],
       newMessageText: null,
       errors: null,
-      moment: moment
+      moment: moment,
+      loading: false,
+      page: 0
     }
   },
   components: {
@@ -73,10 +85,11 @@ export default {
             created: Date.now(),
             meta: {
               user: user.id,
-              done: false
+              delivered: false,
+              error: false
             }
           };
-          this.chat.messages.push(newMessage);
+          this.newMessages.push(newMessage);
           this.newMessageText = null;
           this.scroll();
           this.delivered();
@@ -90,16 +103,17 @@ export default {
             created: newMessage.created,
             chat: this.chat._id
           }).then(response => {
-            this.errors = null;
-            this.chat.messages.forEach(function(item){
+            this.newMessages.forEach(function(item){
               if (new Date(item.created).toISOString() == response.data.message.created){
-                console.log(item.message, 'done')
-
+                item.meta.delivered = true;
               }
             });
             // this.chat.messages.push(response.data.message);
             // this.scroll();
           }).catch(e => {
+          
+            this.checkDelivering();
+
             if (e.response.data.error){
               this.errors = e.response.data.error;
             } else {
@@ -116,22 +130,66 @@ export default {
           $(self.$refs['messages-wrapper']).animate({
             scrollTop: self.$refs['messages-wrapper'].scrollHeight
           }, 500);
-
-          // self.$refs['messages-wrapper'].scrollTop = self.$refs['messages-wrapper'].scrollHeight;
-
         }, 0);
       }
     },
-    delivered(){
-      var self = this;
-      setTimeout(function(){
-        self.chat.messages.forEach(function(item){
-          if (item.meta.done != undefined){
-            console.log(item.message, '!UNDELIVERED!')
-            item.message = item.message + ' !UNDELIVERED!';
+    checkScrollTop(){
+      if (this.chat){
+        var self =  this;
+        setTimeout(function(){
+          var messagesWrapper = self.$refs['messages-wrapper'];
+          var messages = self.$refs['messages'];
+          $(messagesWrapper).on('scroll', function(e){
+            if ($(messagesWrapper).scrollTop() == 0){
+              self.loadMessages();
+            }
+          });
+        }, 0);
+      }      
+    },
+    loadMessages(){
+      var href = this.$route.params.href;
+      var token = this.$store.getters.getToken;
+      if (token && href && this.page != null){
+        // this.loading = true;
+        let uri = CONFIG.ROOT_URI + '/api/users/' + href + '/chat/messages';
+        axios({
+          url: uri,
+          method: 'get',
+          params: {
+            chat: this.chat._id,
+            page: this.page
+          },
+          headers: {
+            'x-access-token': token,
+            'Content-Type': 'application/json'
           }
-        })
-;      }, 4000);
+        }).then(response => {
+          console.log(response.data)
+          // this.loading = false;
+
+          var messagesWrapper = this.$refs['messages-wrapper'];
+          var messages = this.$refs['messages'];
+
+          var h = $(messages).height();
+
+          this.chat.messages.unshift.apply(this.chat.messages, response.data.messages);
+          this.page = response.data.page;
+
+          setTimeout(()=> {
+            $(this.$refs['messages-wrapper']).animate({
+              scrollTop: ($(messages).height() - h)
+            }, 0);
+          }, 0)
+
+        }).catch(e => {
+          if (e.response.data.error){
+            this.errors = e.response.data.error;
+          } else {
+            console.error(e);
+          }
+        }); 
+      }   
     },
     getChat(){
       var href = this.$route.params.href;
@@ -149,7 +207,13 @@ export default {
           this.chat = response.data.chat;
           // console.log(response.data.chat);
           // console.log(this.$store.getters.getUser.id, this.chat.participant1._id);
-          this.scroll();
+          this.checkScrollTop();
+          var self =  this;
+          setTimeout(function(){
+            $(self.$refs['messages-wrapper']).animate({
+              scrollTop: self.$refs['messages-wrapper'].scrollHeight
+            }, 0);
+          }, 0);
         }).catch(e => {
           if (e.response.data.error){
             this.errors = e.response.data.error;
@@ -169,6 +233,17 @@ export default {
           this.$modal.show('login');
         }
       }
+    },
+    checkDelivering(){
+      var self = this;
+      setTimeout(function(){
+        self.newMessages.forEach(function(item){
+          if (!item.meta.delivered){
+            item.meta.error = true;
+            console.log('check', item)
+          }
+        });
+      }, 3000);
     }
   },
   computed: {
@@ -254,6 +329,21 @@ export default {
   margin-bottom: 5px;
   color: #d6d6d6;
   padding: 0px 5px;
+}
+.send-error {
+  height: 8px;
+  width: 8px;
+  background-color: #ff8b94;
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0;
+  transition: .25s;
+}
+.send-error.error {
+  opacity: 1;
+}
+.from .message-date .send-error {
+  margin: 5px 5px 0px 0px;
 }
 .from .message-date {
   text-align: right;

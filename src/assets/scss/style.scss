@@ -50,6 +50,22 @@ body {
     position: fixed;
     z-index: 5;
 }
+.loader {
+	width: 100%;
+	height: 80px;
+	overflow: hidden;
+	text-align: center;
+	transition: .2s;
+	opacity: 0;
+	img {
+		width: auto;
+		height: 200px;
+		margin-top: -60px;
+	}
+	&.active {
+		opacity: .2;
+	}
+}
 /* buttons */
 .button {
 	height: 34px;
@@ -284,6 +300,7 @@ body {
 }
 
 /*pages*/
+
 .page {
 	padding-top: 80px;
 }
