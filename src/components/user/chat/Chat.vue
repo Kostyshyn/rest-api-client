@@ -1,6 +1,6 @@
 <template>
-  <b-row>
-    <b-col lg="6" md="10" sm="12" offset-md="1" offset-lg="3" class="chat-column"> 
+  <!-- <b-row> -->
+    <b-col lg="8" md="8" sm="12" class="chat-column"> 
       <div class="chat" v-if="chat">
         <div class="chat-header box">
           {{ participant2.username }}
@@ -14,7 +14,7 @@
               <img src="../../../assets/loader.gif" alt="loader">
             </div>
               <div v-for="message in chat.messages" class="" 
-              :class="message.meta.user == participant2._id ? 'to' : 'from' "> 
+              :class="[ ( message.meta.user == participant2._id ? 'to' : 'from' ),  ( message.meta.read ? '': 'unread' ) ]"> 
                 <div class="message text-wrapping">
                   {{ message.message }}
                 </div>
@@ -44,7 +44,7 @@
           </div>
       </div>
     </b-col>
-  </b-row>
+<!--   </b-row> -->
 </template>
 
 <script>
@@ -97,7 +97,7 @@ export default {
 
           var href = this.$route.params.href;
 
-          let uri = CONFIG.ROOT_URI + '/api/users/' + href + '/chat';
+          let uri = CONFIG.ROOT_URI + '/api/users/chat/' + href;
           axios.post(uri, {
             token: token,
             message: newMessage.message,
@@ -152,8 +152,8 @@ export default {
       var href = this.$route.params.href;
       var token = this.$store.getters.getToken;
       if (token && href && this.page != null){
-        this.loading = true;
-        let uri = CONFIG.ROOT_URI + '/api/users/' + href + '/chat/messages';
+        // this.loading = true;
+        let uri = CONFIG.ROOT_URI + '/api/users/chat/' + href + '/messages';
         axios({
           url: uri,
           method: 'get',
@@ -167,7 +167,7 @@ export default {
           }
         }).then(response => {
           console.log(response.data)
-          this.loading = false;
+          // this.loading = false;
 
           var messagesWrapper = this.$refs['messages-wrapper'];
           var messages = this.$refs['messages'];
@@ -196,7 +196,7 @@ export default {
       var href = this.$route.params.href;
       var token = this.$store.getters.getToken;
       if (token && href){
-        let uri = CONFIG.ROOT_URI + '/api/users/' + href + '/chat';
+        let uri = CONFIG.ROOT_URI + '/api/users/chat/' + href;
         axios({
           url: uri,
           method: 'get',
@@ -209,12 +209,7 @@ export default {
           // console.log(response.data.chat);
           // console.log(this.$store.getters.getUser.id, this.chat.participant1._id);
           this.checkScrollTop();
-          var self =  this;
-          setTimeout(function(){
-            $(self.$refs['messages-wrapper']).animate({
-              scrollTop: self.$refs['messages-wrapper'].scrollHeight
-            }, 0);
-          }, 0);
+          this.scroll();
         }).catch(e => {
           if (e.response.data.error){
             this.errors = e.response.data.error;
@@ -319,7 +314,7 @@ export default {
   justify-content: flex-end;*/
 }
 .messages {
-  padding: 15px;
+  /*padding: 15px;*/
   display: flex;
   flex-direction: column;
   height: auto;
@@ -356,6 +351,9 @@ export default {
 .send-error.error {
   opacity: 1;
 }
+.from, .to {
+  padding: 0px 15px;
+}
 .from .message-date .send-error {
   margin: 5px 5px 0px 0px;
 }
@@ -373,7 +371,7 @@ export default {
   border: 2px solid #d6d6d6;
 }
 .to.unread {
-	background-color: #c1c1c1;
+  /*background-color: #e9ecef;*/
 }
 .from .message {
   background-color: #fff;
@@ -387,7 +385,7 @@ export default {
   padding: 15px;
   background-color: #fff;
   height: auto;
-  width: 570px;
+  width: 760px;
   box-shadow: 0px -4px 25px 0px rgba(46, 61, 73, 0.2);
 }
 .chat-form textarea {
@@ -436,12 +434,12 @@ export default {
 
 @media screen and (max-width: 1200px){
   .chat-form {
-    width: 480px;
+    width: 640px;
   }
 }
 @media screen and (max-width: 992px){
   .chat-form {
-    width: 600px;
+    width: 480px;
   }
 }
 @media screen and (max-width: 768px){
@@ -449,7 +447,8 @@ export default {
     width: 540px;
   }
   .messages-wrapper {
-    height: calc(100vh - 190px);
+    /*height: calc(100vh - 190px);*/
+    height: calc(100vh - 137px);
   }
   .chat-form textarea {
     margin-right: 0px;

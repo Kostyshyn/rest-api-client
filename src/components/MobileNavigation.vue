@@ -31,15 +31,21 @@
 
       </div>
       <ul class="mobile-user-links" v-if="isUserLoggedIn">
-        <li>
-          <a href="#" @click="logout">Logout</a>
-        </li>
+              <li class="notifications">
+                <div class="notifications-container">
+                  <icon name="bell"></icon>
+                  <span v-if="notifications.length > 0">{{ notifications.length }}</span>
+                </div>
+              </li>
         <li>
           <router-link
             to="/profile"
             class=""
           >Profile</router-link>
         </li>
+<!--         <li>
+          <a href="#" @click="logout">Logout</a>
+        </li> -->
       </ul>
       <ul class="mobile-auth-links" v-if="!isUserLoggedIn">
         <li>
@@ -64,14 +70,20 @@
 <script>
 
 import service from '../services'
+import Icon from 'vue-awesome/components/Icon'
+import { Event } from '../events'
 
 export default {
   name: 'MobileNavigation',
   data(){
     return {
       user: null,
+      notifications: [],
       navbarOpen: false
     }
+  },
+  components: {
+    Icon
   },
   computed: {
     isUserLoggedIn(){
@@ -79,17 +91,23 @@ export default {
     }
   },
   methods: {
-    logout(){
+    // logout(){
 
-      service.logout(this)
+    //   service.logout(this)
 
-    },
+    // },
     toggle(){
       this.navbarOpen = !this.navbarOpen;
     },
     close(){
       this.navbarOpen = false;
     }
+  },
+  created(){
+    var self = this;
+    Event.$on('notification', function(note){
+      self.notifications.push(note);
+    });
   }
 }
 </script>

@@ -9,6 +9,7 @@ import Profile from '@/components/Profile'
 import UsersAll from '@/components/user/UsersAll'
 import User from '@/components/user/User'
 import Chat from '@/components/user/chat/Chat'
+import Chats from '@/components/user/chat/Chats'
 // auth
 import Register from '@/components/Register'
 import Login from '@/components/Login'
@@ -25,12 +26,28 @@ export default new Router({
     {
       path: '/register',
       name: 'Register',
-      component: Register
+      component: Register,
+      beforeEnter: (to, from, next) => {
+        var currentUser = store.getters.getUser;
+        if (currentUser){
+          next('/profile');
+        } else {
+          next();
+        }
+      }
     },
     {
       path: '/login',
       name: 'Login',
-      component: Login
+      component: Login,
+      beforeEnter: (to, from, next) => {
+        var currentUser = store.getters.getUser;
+        if (currentUser){
+          next('/profile');
+        } else {
+          next();
+        }
+      }
     },
     {
       path: '/profile',
@@ -59,19 +76,31 @@ export default new Router({
       }
     },
     {
-      path: '/users/:href/chat',
-      name: 'Chat',
-      component: Chat,
-      props: true,
-      beforeEnter: (to, from, next) => {
-        var currentUserHref = store.getters.getUser ? store.getters.getUser.href : null;
-        var userHref = to.params.href;
-        if (currentUserHref && currentUserHref == userHref){
-          next('/profile');
-        } else {
-          next();
+      path: '/chat',
+      name: 'Chats',
+      component: Chats,
+      children: [
+        {
+          path: ':href',
+          name: 'Chat',
+          component: Chat,
+          meta: { requiresAuth: true },
+          props: true,
+          beforeEnter: (to, from, next) => {
+            var currentUserHref = store.getters.getUser ? store.getters.getUser.href : null;
+            var userHref = to.params.href;
+            if (currentUserHref && currentUserHref == userHref){
+              next('/profile');
+            } else {
+              next();
+            }
+          }
         }
-      }
-    }
+      ]
+    },
+  {
+    path: '*',
+    redirect: '/'
+  }
   ]
 })

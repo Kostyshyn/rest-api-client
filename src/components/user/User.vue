@@ -9,7 +9,7 @@
       <br>
       <hr>
       <router-link
-        :to="{ path: `/users/${ user.href }/chat` }"
+        :to="{ path: `/chat/${ user.href }` }"
         class=""
         exact
       >chat with {{ user.username }}</router-link> 
@@ -64,7 +64,6 @@ export default {
         var follows = this.user.followers;
         var follower = this.$store.getters.getUser;
         var status = isFollow(follows, follower);
-        console.log(status)
         return status ? 'Unfollow' : 'Follow';
       } else {
         return 'Follow';
@@ -79,7 +78,6 @@ export default {
 function isFollow(followers, follows){ // array of followers and follows object
   var found = false;
   for (var i = 0; i < followers.length; i++){
-    console.log(followers[i]._id, follows.id);
     if (followers[i]._id == follows.id){
       found = true;
       break;

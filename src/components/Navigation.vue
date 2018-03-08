@@ -3,7 +3,7 @@
     <b-container>
       <b-row>
   
-        <b-col lg="9" md="7" sm="7">
+        <b-col lg="8" md="7" sm="7">
           <div class="page-links">
             
             <ul>
@@ -24,15 +24,15 @@
             
           </div>
         </b-col>
-        <b-col lg="3" md="5" sm="5" v-if="!isUserLoggedIn">
+        <b-col lg="4" md="5" sm="5" v-if="!isUserLoggedIn">
 
           <div class="auth-links">
           
             <ul>
-              <li>
-                <button class="button" @click="showLoginModal">
+              <li class="login">
+                <a href="#" @click.prevent="showLoginModal">
                   Login
-                </button>
+                </a>
               </li>
               <li>
                 <router-link
@@ -44,22 +44,25 @@
       
           </div>
         </b-col>
-        <b-col lg="3" md="5" sm="5" v-if="isUserLoggedIn">
+        <b-col lg="4" md="5" sm="5" v-if="isUserLoggedIn">
 
           <div class="user-links">
             
             <ul>
               <li class="notifications">
-                <span>{{ notifications.length }}</span>
+                <div class="notifications-container">
+                  <icon name="bell"></icon>
+                  <span v-if="notifications.length > 0">{{ notifications.length }}</span>
+                </div>
               </li>
-              <li>
-                <a href="#" @click="logout">Logout</a>
-              </li>
-              <li>
+              <li class="user-nav">
                 <router-link
                 to="/profile"
                 class=""
                 >Profile</router-link>
+              </li>
+              <li class="user-nav">
+                <a href="#" @click="logout">Exit</a>
               </li>
             </ul> 
                         
@@ -89,8 +92,9 @@
 
 <script>
 
-import { Event } from '../events';
-import service from '../services';
+import { Event } from '../events'
+import service from '../services'
+import Icon from 'vue-awesome/components/Icon'
 
 export default {
   name: 'Navigation',
@@ -102,6 +106,9 @@ export default {
       password: '',
       notifications: []
     }
+  },
+  components: {
+    Icon
   },
   methods: {
     logout(){
@@ -128,13 +135,13 @@ export default {
       this.password = null;
       this.loginErrors = null;
       this.$modal.show('login');
-
     }
   },
   computed: {
     isUserLoggedIn(){
       return this.$store.getters.getCurrentState.isUserLoggedIn;
-    }
+    },
+
   },
   created(){
     // Event.$emit('event');

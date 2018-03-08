@@ -15,13 +15,15 @@ export default {
 				localStorage.setItem('user', JSON.stringify(response.data.user));
 			}
 	        context.loginErrors = null;
+	        context.user = response.data.user;
 	        context.$store.dispatch('setToken', response.data.token);
 	        context.$store.dispatch('setUser', response.data.user);
 	        context.$store.dispatch('setSocket', socket);
 	        if (mobile){
-      			context.$router.push('/profile');
+      			context.$router.push('/');
 	      	} else {
 	      		context.$modal.hide('login');
+	      		context.$router.push('/');
 	      	}
 
 	        context.userInput = null;
@@ -44,6 +46,7 @@ export default {
 				localStorage.setItem('user', JSON.stringify(response.data.user));
 			}
 	        context.errors = null;
+	        context.user = response.data.user;
 	        context.$store.dispatch('setToken', response.data.token);
 	        context.$store.dispatch('setUser', response.data.user);
 	        context.$store.dispatch('setSocket', socket);

@@ -1,11 +1,13 @@
 <template>
-  <div v-if="user">
-    Profile
-    <h2>{{ user.username }}</h2>
-    <hr>
-    <em>followers: {{ user.followers.length }}</em>
-    <br>
-    <em>following: {{ user.follows.length }}</em>
+  <div class="profile">
+    <div v-if="user">
+      Profile
+      <h2>{{ user.username }}</h2>
+      <hr>
+      <em>followers: {{ user.followers.length }}</em>
+      <br>
+      <em>following: {{ user.follows.length }}</em>
+    </div>
   </div>
 </template>
 

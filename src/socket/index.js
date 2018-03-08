@@ -24,7 +24,7 @@ function getConnection(token){
 			if (note.type == 'message'){
 				Event.$emit('message', note.payload);	
 			}
-			// Event.$emit('notification', note);
+			Event.$emit('notification', note);
 			// console.log(note);
 		});
 

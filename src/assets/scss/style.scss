@@ -164,15 +164,95 @@ body {
 						/*color: #fff;*/
 					}
 				}
+				&.login,
+				&.user-nav {
+	    			height: 80px;
+	    			a {
+						display: inline-block;
+						font-size: 18px;
+						font-weight: bold;
+						text-decoration: none;
+						color: #9a9a9a;
+						background-color: white;
+						height: 80px;
+						line-height: 80px;
+						padding: 0px 15px;
+						transition: color .2s ease-in-out;
+						&.router-link-active,
+						&.router-link-exact-active {
+							border-bottom: 5px solid #41ede1;
+							color: #737373;
+						}
+						&:hover {
+							color: #737373;
+						}
+
+					}
+	    		}
     		}
     	}
     }	
 }
-.notifications {
-	span {
+.user-links .notifications,
+.mobile-user-links .notifications {
+	position: relative;
+	color: #9a9a9a;
+	min-width: 50px;
+	height: 60px;
+	width: auto;
+	text-align: center;
+	margin-bottom: -20px;
+	margin-right: 10px;
+	.notifications-container {
 		padding: 0px 10px;
-		background-color: #ff8b94;
-		color: #fff;
+		height: 60px;
+		cursor: pointer;
+		transition: .2s;
+		svg {
+			height: 26px;
+			width: 26px;
+			display: inline-block;
+			position: absolute;
+			bottom: 12px;
+			right: 12px;
+		}
+		span {
+			text-align: center;
+			display: inline-block;
+			height: 16px;
+			min-width: 16px;
+			border-radius: 8px;
+			padding: 0px 6px;
+			position: absolute;
+			top: 37px;
+			right: 30px;
+			line-height: 16px;
+			background-color: #ff8b94;
+			color: #fff;
+			font-size: 12px;
+		}
+		&:hover {
+			color: #737373;
+		}
+	}
+}
+.mobile-user-links .notifications {
+	height: 55px;
+	margin-right: 0px;
+	.notifications-container {
+		height: 55px;
+		svg {
+			height: 22px;
+			width: 22px;
+			bottom: 14px;
+		}
+		span {
+			top: 30px;
+			right: 28px;
+		}
+		&:hover {
+			color: #737373;
+		}
 	}
 }
 .navigation-mobile {
@@ -307,7 +387,8 @@ body {
 
 .main-page,
 .user-wrapper,
-.users-wrapper {
+.users-wrapper,
+.profile {
 	padding: 20px 0px;
 }
 
