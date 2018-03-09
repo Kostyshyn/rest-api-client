@@ -61,9 +61,9 @@
                 class=""
                 >Profile</router-link>
               </li>
-              <li class="user-nav">
+<!--               <li class="user-nav">
                 <a href="#" @click="logout">Exit</a>
-              </li>
+              </li> -->
             </ul> 
                         
           </div>
@@ -111,11 +111,11 @@ export default {
     Icon
   },
   methods: {
-    logout(){
+    // logout(){
 
-      service.logout(this)
+    //   service.logout(this)
 
-    },
+    // },
     login(){
 
       var w = window.innerWidth;

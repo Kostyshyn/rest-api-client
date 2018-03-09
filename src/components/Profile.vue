@@ -7,6 +7,8 @@
       <em>followers: {{ user.followers.length }}</em>
       <br>
       <em>following: {{ user.follows.length }}</em>
+      <br><br>
+      <button class="button" @click="logout">Logout</button>
     </div>
   </div>
 </template>
@@ -14,6 +16,7 @@
 <script>
 import axios from 'axios'
 import * as CONFIG from '../config.js'
+import service from '../services'
 
 export default {
   name: 'Profile',
@@ -36,6 +39,11 @@ export default {
         }
       });
     },
+    logout(){
+
+      service.logout(this)
+
+    }
   },
   computed: {
     href(){
