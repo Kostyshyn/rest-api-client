@@ -1,6 +1,7 @@
 <template>
   <!-- <b-row> -->
-    <b-col lg="8" md="8" sm="12" class="chat-column"> 
+    <b-col lg="8" md="8" sm="12" class="chat-column" 
+    :class='{ active: chatActive}'> 
       <div class="chat" v-if="chat">
         <div class="chat-header box">
           {{ participant2.username }}
@@ -60,6 +61,8 @@ export default {
   data(){
     return {
       chat: null,
+      chatActive: false,
+      href: null,
       users: null,
       newMessages: [],
       newMessageText: null,
@@ -95,7 +98,8 @@ export default {
           this.newMessageText = null;
           this.scroll();
 
-          var href = this.$route.params.href;
+          // var href = this.$route.params.href;
+          var href = this.href ? this.href : this.$route.params.href;
 
           let uri = CONFIG.ROOT_URI + '/api/users/chat/' + href;
           axios.post(uri, {
@@ -149,7 +153,8 @@ export default {
       }      
     },
     loadMessages(){
-      var href = this.$route.params.href;
+      // var href = this.$route.params.href;
+      var href = this.href ? this.href : this.$route.params.href;
       var token = this.$store.getters.getToken;
       if (token && href && this.page != null){
         // this.loading = true;
@@ -193,7 +198,7 @@ export default {
       }   
     },
     getChat(){
-      var href = this.$route.params.href;
+      var href = this.href ? this.href : this.$route.params.href;
       var token = this.$store.getters.getToken;
       if (token && href){
         let uri = CONFIG.ROOT_URI + '/api/users/chat/' + href;
@@ -206,6 +211,8 @@ export default {
           }
         }).then(response => {
           this.chat = response.data.chat;
+
+          this.chatActive = true;
           // console.log(response.data.chat);
           // console.log(this.$store.getters.getUser.id, this.chat.participant1._id);
           this.checkScrollTop();
@@ -255,7 +262,22 @@ export default {
       }
     }
   },
+  watch: {
+    '$route'(to, from){
+      console.log(this.href)
+      this.href = to.params.href;
+      this.getChat();
+      console.log(this.href)
+    }
+  },
+  // beforeRouteUpdate(to, from, next){
+  //   console.log(this.href)
+  //   this.href = to.params.href;
+  //   console.log(this.href)
+  //   next();
+  // },
   created(){
+    // console.log(this.$route.params.href)
     this.getChat();
     var self = this;
     Event.$on('message', function(message){
@@ -276,11 +298,16 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .chat {
-  position: relative;
+  position: fixed;
   width: 100%;
+  width: 760px;
 }
 .chat-column {
-  padding: 0px;
+  opacity: 0;
+  transition: .15s;
+}
+.chat-column.active {
+  opacity: 1;
 }
 .chat-header {
   min-height: 50px;
@@ -307,14 +334,14 @@ export default {
 .messages-wrapper {
   height: calc(100vh - 157px);
   overflow-y: auto;
-  border-left: 1px solid #dee2e6;
+  /*border-left: 1px solid #dee2e6;*/
   border-right: 1px solid #dee2e6;
 /*  display: flex;
   flex-direction: column;
   justify-content: flex-end;*/
 }
 .messages {
-  /*padding: 15px;*/
+  padding: 15px 0px;
   display: flex;
   flex-direction: column;
   height: auto;
@@ -433,22 +460,22 @@ export default {
 }
 
 @media screen and (max-width: 1200px){
-  .chat-form {
+  .chat-form, .chat {
     width: 640px;
   }
 }
 @media screen and (max-width: 992px){
-  .chat-form {
+  .chat-form, .chat {
     width: 480px;
   }
 }
 @media screen and (max-width: 768px){
-  .chat-form {
+  .chat-form, .chat {
     width: 540px;
   }
   .messages-wrapper {
-    /*height: calc(100vh - 190px);*/
-    height: calc(100vh - 137px);
+    height: calc(100vh - 190px);
+    /*height: calc(100vh - 137px);*/
   }
   .chat-form textarea {
     margin-right: 0px;
@@ -468,7 +495,7 @@ export default {
     font-weight: bold;
     font-size: 16px;
   }
-  .chat-form {
+  .chat-form, .chat {
     width: 100%;
   }
 }

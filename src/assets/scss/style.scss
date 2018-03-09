@@ -8,7 +8,7 @@ body {
 /*general*/
 .fade-enter-active, 
 .fade-leave-active {
-	transition: opacity .2s;
+	transition: opacity .1s;
 	z-index: 1;
 }
 .fade-enter, 
@@ -230,6 +230,7 @@ body {
 			background-color: #ff8b94;
 			color: #fff;
 			font-size: 12px;
+			font-weight: bold;
 		}
 		&:hover {
 			color: #737373;
@@ -391,7 +392,9 @@ body {
 .profile {
 	padding: 20px 0px;
 }
-
+.chat-column {
+	padding: 0px;
+}
 .v--modal-overlay .v--modal-box {
 	/*top: 300px !important;*/
 }
