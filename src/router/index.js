@@ -8,8 +8,10 @@ import Profile from '@/components/Profile'
 // user
 import UsersAll from '@/components/user/UsersAll'
 import User from '@/components/user/User'
-import Chat from '@/components/user/chat/Chat'
+// chat
 import Chats from '@/components/user/chat/Chats'
+import Chat from '@/components/user/chat/Chat'
+import newChat from '@/components/user/chat/newChat'
 // auth
 import Register from '@/components/Register'
 import Login from '@/components/Login'
@@ -79,12 +81,17 @@ export default new Router({
       path: '/chat',
       name: 'Chats',
       component: Chats,
+      meta: { requiresAuth: true },
       children: [
+        // {
+        //   path: '',
+        //   name: 'newChat',
+        //   component: newChat
+        // },      
         {
           path: ':href',
           name: 'Chat',
           component: Chat,
-          meta: { requiresAuth: true },
           props: true,
           beforeEnter: (to, from, next) => {
             var currentUserHref = store.getters.getUser ? store.getters.getUser.href : null;

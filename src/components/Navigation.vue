@@ -95,6 +95,7 @@
 import { Event } from '../events'
 import service from '../services'
 import Icon from 'vue-awesome/components/Icon'
+import 'vue-awesome/icons/bell'
 
 export default {
   name: 'Navigation',

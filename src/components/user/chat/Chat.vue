@@ -1,5 +1,4 @@
 <template>
-  <!-- <b-row> -->
     <b-col lg="8" md="8" sm="12" class="chat-column" 
     :class='{ active: chatActive}'> 
       <div class="chat" v-if="chat">
@@ -45,16 +44,15 @@
           </div>
       </div>
     </b-col>
-<!--   </b-row> -->
 </template>
 
 <script>
 
-import Icon from 'vue-awesome/components/Icon'
-import axios from 'axios'
-import * as CONFIG from '../../../config.js'
 import moment from 'moment'
 import { Event } from '../../../events';
+import chatService from '../../../services/chat-service'
+import Icon from 'vue-awesome/components/Icon'
+import 'vue-awesome/icons/angle-right'
 
 export default {
   name: 'Chat',
@@ -76,57 +74,14 @@ export default {
     Icon
   },
   methods: {
+    getChat(){
+      chatService.getChat(this);
+    },
     send(e){
-      // this.scroll();
-      if (!e.shiftKey && e.keyCode == 13 || e.type == 'click'){
-        e.preventDefault();
-        var self = this;
-        var token = this.$store.getters.getToken;
-        var user = this.$store.getters.getUser;
-        if (this.newMessageText != null && this.newMessageText.trim() != '' && token){
-
-          var newMessage = {
-            message: this.newMessageText,
-            created: Date.now(),
-            meta: {
-              user: user.id,
-              delivered: false,
-              error: false
-            }
-          };
-          this.newMessages.push(newMessage);
-          this.newMessageText = null;
-          this.scroll();
-
-          // var href = this.$route.params.href;
-          var href = this.href ? this.href : this.$route.params.href;
-
-          let uri = CONFIG.ROOT_URI + '/api/users/chat/' + href;
-          axios.post(uri, {
-            token: token,
-            message: newMessage.message,
-            created: newMessage.created,
-            chat: this.chat._id
-          }).then(response => {
-            this.newMessages.forEach(function(item){
-              if (new Date(item.created).toISOString() == response.data.message.created){
-                item.meta.delivered = true;
-              }
-            });
-            // this.chat.messages.push(response.data.message);
-            // this.scroll();
-          }).catch(e => {
-          
-            this.checkDelivering();
-
-            if (e.response.data.error){
-              this.errors = e.response.data.error;
-            } else {
-              console.error(e);
-            }
-          });
-        }
-      }
+      chatService.send(this, e);
+    },
+    loadMessages(){
+      chatService.loadMessages(this);
     },
     scroll(){
       if (this.chat){
@@ -152,98 +107,12 @@ export default {
         }, 0);
       }      
     },
-    loadMessages(){
-      // var href = this.$route.params.href;
-      var href = this.href ? this.href : this.$route.params.href;
-      var token = this.$store.getters.getToken;
-      if (token && href && this.page != null){
-        // this.loading = true;
-        let uri = CONFIG.ROOT_URI + '/api/users/chat/' + href + '/messages';
-        axios({
-          url: uri,
-          method: 'get',
-          params: {
-            chat: this.chat._id,
-            page: this.page
-          },
-          headers: {
-            'x-access-token': token,
-            'Content-Type': 'application/json'
-          }
-        }).then(response => {
-          console.log(response.data)
-          // this.loading = false;
-
-          var messagesWrapper = this.$refs['messages-wrapper'];
-          var messages = this.$refs['messages'];
-
-          var h = $(messages).height();
-
-          this.chat.messages.unshift.apply(this.chat.messages, response.data.messages);
-          this.page = response.data.page;
-
-          setTimeout(()=> {
-            $(this.$refs['messages-wrapper']).animate({
-              scrollTop: ($(messages).height() - h)
-            }, 0);
-          }, 0)
-
-        }).catch(e => {
-          if (e.response.data.error){
-            this.errors = e.response.data.error;
-          } else {
-            console.error(e);
-          }
-        }); 
-      }   
-    },
-    getChat(){
-      var href = this.href ? this.href : this.$route.params.href;
-      var token = this.$store.getters.getToken;
-      if (token && href){
-        let uri = CONFIG.ROOT_URI + '/api/users/chat/' + href;
-        axios({
-          url: uri,
-          method: 'get',
-          headers: {
-            'x-access-token': token,
-            'Content-Type': 'application/json'
-          }
-        }).then(response => {
-          this.chat = response.data.chat;
-
-          this.chatActive = true;
-          // console.log(response.data.chat);
-          // console.log(this.$store.getters.getUser.id, this.chat.participant1._id);
-          this.checkScrollTop();
-          this.scroll();
-        }).catch(e => {
-          if (e.response.data.error){
-            this.errors = e.response.data.error;
-          } else {
-            console.error(e);
-          }
-        });
-      } else {
-        var w = window.innerWidth;
-        var mobile = false;
-        if ( w < 769 ){
-          mobile = true;
-        };
-        if (mobile){
-          this.$router.push('/login');
-        } else {
-          this.$modal.show('login');
-        }
-      }
-    },
     checkDelivering(){
       var self = this;
       setTimeout(function(){
         self.newMessages.forEach(function(item){
           if (!item.meta.delivered){
             item.meta.error = true;
-            console.log('check', item)
           }
         });
       }, 3000);
@@ -264,20 +133,11 @@ export default {
   },
   watch: {
     '$route'(to, from){
-      console.log(this.href)
       this.href = to.params.href;
       this.getChat();
-      console.log(this.href)
     }
   },
-  // beforeRouteUpdate(to, from, next){
-  //   console.log(this.href)
-  //   this.href = to.params.href;
-  //   console.log(this.href)
-  //   next();
-  // },
   created(){
-    // console.log(this.$route.params.href)
     this.getChat();
     var self = this;
     Event.$on('message', function(message){
@@ -334,11 +194,7 @@ export default {
 .messages-wrapper {
   height: calc(100vh - 157px);
   overflow-y: auto;
-  /*border-left: 1px solid #dee2e6;*/
   border-right: 1px solid #dee2e6;
-/*  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;*/
 }
 .messages {
   padding: 15px 0px;

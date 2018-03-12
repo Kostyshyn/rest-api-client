@@ -24,16 +24,17 @@
 </template>
 
 <script>
-import axios from 'axios'
-import * as CONFIG from '../../../config.js'
 import Chat from './Chat.vue'
+import { Event } from '../../../events';
+import chatService from '../../../services/chat-service'
 
 export default {
   name: 'Chats',
   data(){
     return {
       chats: null,
-      visible: false
+      visible: false,
+      errors: null
     }
   },
   components: {
@@ -41,39 +42,7 @@ export default {
   },
   methods: {
     getChats(){
-      var token = this.$store.getters.getToken;
-      if (token){
-        let uri = CONFIG.ROOT_URI + '/api/users/chat';
-        axios({
-          url: uri,
-          method: 'get',
-          headers: {
-            'x-access-token': token,
-            'Content-Type': 'application/json'
-          }
-        }).then(response => {
-          this.chats = response.data.chats;
-          console.log(response.data.chats);
-          // console.log(this.$store.getters.getUser.id, this.chat.participant1._id);
-        }).catch(e => {
-          if (e.response.data.error){
-            this.errors = e.response.data.error;
-          } else {
-            console.error(e);
-          }
-        });
-      } else {
-        // var w = window.innerWidth;
-        // var mobile = false;
-        // if ( w < 769 ){
-        //   mobile = true;
-        // };
-        // if (mobile){
-        //   this.$router.push('/login');
-        // } else {
-        //   this.$modal.show('login');
-        // }
-      }
+      chatService.getChats(this);
     },
     hideChats(){
       var w = window.innerWidth;
@@ -82,7 +51,6 @@ export default {
       };
     },
     participant2(chat){
-
       var participant1 = this.$store.getters.getUser;
       var participant2 = chat.participant2;
       if (participant1.id == participant2._id){
@@ -90,12 +58,10 @@ export default {
       } else {
         return chat.participant2;
       }
-      
     }
   },
   watch: {
     '$route'(to, from){
-      console.log(from)
       if (to.path == '/chat'){
         var w = window.innerWidth;
         if ( w < 769 ){
@@ -118,6 +84,17 @@ export default {
   },
   computed: {
 
+  },
+  beforeDestroy () {
+    Event.$off('newChat');
+  },
+  mounted(){
+    var self = this;
+    Event.$on('newChat', function(chat){
+      if (self.chats){
+        self.chats.push(chat);
+      }
+    });
   },
   created(){
     var w = window.innerWidth;
@@ -148,6 +125,7 @@ export default {
   width: 100%;
 }
 .chats ul li a {
+  outline: none;
   display: inline-block;
   box-sizing: border-box;
   height: auto;

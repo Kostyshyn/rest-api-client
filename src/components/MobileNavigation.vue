@@ -71,6 +71,8 @@
 
 import service from '../services'
 import Icon from 'vue-awesome/components/Icon'
+import 'vue-awesome/icons/bell'
+
 import { Event } from '../events'
 
 export default {
