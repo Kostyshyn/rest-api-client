@@ -3,6 +3,7 @@
       <b-row>
         <b-col lg="3" md="4" sm="12" class="chat-column">
           <div class="chats" v-if="visible">
+            <div class="chats-header">Chats</div>
             <ul v-if="chats">
               <li v-for="chat in chats" @click="hideChats">
                 <router-link
@@ -113,6 +114,16 @@ export default {
   border-right: 1px solid #dee2e6;
   min-height: calc(100vh - 80px);
   height: auto;
+}
+.chats-header {
+  min-height: 40px;
+  height: auto;
+  font-weight: bold;
+  font-size: 20px;
+  text-align: center;
+  padding: 10px 0px;
+  color: #9a9a9a;
+  border-bottom: 1px solid #dee2e6;
 }
 .chats ul {
   margin: 0px;

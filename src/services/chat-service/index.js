@@ -3,6 +3,12 @@ import axios from 'axios'
 import { Event } from '../../events'
 
 export default {
+	sortChats(chats){
+		var result = chats.sort(function(a, b){
+			return new Date(b.messages[b.messages.length - 1].created) - new Date(a.messages[a.messages.length - 1].created);
+		});
+		return result;
+	},
 	getChats(context){
 		var token = context.$store.getters.getToken;
 		if (token){
@@ -16,6 +22,7 @@ export default {
 				}
 			}).then(response => {
 				context.chats = response.data.chats;
+				// context.chats = this.sortChats(response.data.chats); // sort chats by last message
 			}).catch(e => {
 				if (e.response){
 					context.errors = e.response.data.error;
