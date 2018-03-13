@@ -31,21 +31,24 @@
 
       </div>
       <ul class="mobile-user-links" v-if="isUserLoggedIn">
-              <li class="notifications">
-                <div class="notifications-container">
-                  <icon name="bell"></icon>
-                  <span v-if="notifications.length > 0">{{ notifications.length }}</span>
-                </div>
-              </li>
-        <li>
+        <li class="chat-link">
+          <router-link
+            :to="{ name: 'Chats' }"
+            class="chat-nav-container"
+            >
+            <icon name="envelope"></icon>
+            <!-- <span>4</span> -->
+          </router-link>
+        </li>
+        <li class="profile-link">
           <router-link
             to="/profile"
-            class=""
-          >Profile</router-link>
+            class="user-nav-container"
+          >
+            <icon name="user-circle"></icon>
+            <span v-if="notifications.length > 0">{{ notifications.length }}</span>
+          </router-link>
         </li>
-<!--         <li>
-          <a href="#" @click="logout">Logout</a>
-        </li> -->
       </ul>
       <ul class="mobile-auth-links" v-if="!isUserLoggedIn">
         <li>
@@ -72,6 +75,7 @@
 import service from '../services'
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/bell'
+import 'vue-awesome/icons/user-circle'
 
 import { Event } from '../events'
 

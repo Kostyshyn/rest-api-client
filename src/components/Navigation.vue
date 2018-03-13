@@ -49,21 +49,24 @@
           <div class="user-links">
             
             <ul>
-              <li class="notifications">
-                <div class="notifications-container">
-                  <icon name="bell"></icon>
-                  <span v-if="notifications.length > 0">{{ notifications.length }}</span>
-                </div>
-              </li>
-              <li class="user-nav">
+              <li class="chat-link">
                 <router-link
-                to="/profile"
-                class=""
-                >Profile</router-link>
+                :to="{ name: 'Chats' }"
+                class="chat-nav-container"
+                >
+                  <icon name="envelope"></icon>
+                  <!-- <span>432</span> -->
+                </router-link>
               </li>
-<!--               <li class="user-nav">
-                <a href="#" @click="logout">Exit</a>
-              </li> -->
+              <li class="profile-link">
+                <router-link
+                  to="/profile"
+                  class="user-nav-container"
+                >
+                  <icon name="user-circle"></icon>
+                  <span v-if="notifications.length > 0">{{ notifications.length }}</span>
+                </router-link>
+              </li>
             </ul> 
                         
           </div>
@@ -96,6 +99,7 @@ import { Event } from '../events'
 import service from '../services'
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/bell'
+import 'vue-awesome/icons/envelope'
 
 export default {
   name: 'Navigation',

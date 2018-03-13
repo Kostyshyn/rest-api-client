@@ -7,12 +7,6 @@
       <em>followers: {{ user.followers.length }}</em>
       <br>
       <em>following: {{ user.follows.length }}</em>
-      <br><br>
-      <router-link
-        :to="{ name: 'Chats' }"
-        class=""
-        exact
-      >Chat</router-link>
       <br>
       <br>
       <button class="button" @click="logout">Logout</button>

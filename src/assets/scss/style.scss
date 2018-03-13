@@ -26,6 +26,9 @@ body {
 	user-select: none;
 	-webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }
+a {
+	outline: none;
+}
 .text-wrapping {
     overflow-wrap: break-word;
     word-wrap: break-word;
@@ -164,8 +167,7 @@ body {
 						/*color: #fff;*/
 					}
 				}
-				&.login,
-				&.user-nav {
+				&.login {
 	    			height: 80px;
 	    			a {
 						display: inline-block;
@@ -193,8 +195,10 @@ body {
     	}
     }	
 }
-.user-links .notifications,
-.mobile-user-links .notifications {
+.user-links .chat-link,
+.mobile-user-links .chat-link,
+.user-links .profile-link,
+.mobile-user-links .profile-link {
 	position: relative;
 	color: #9a9a9a;
 	min-width: 50px;
@@ -202,8 +206,18 @@ body {
 	width: auto;
 	text-align: center;
 	margin-bottom: -20px;
-	margin-right: 10px;
-	.notifications-container {
+	.chat-nav-container,
+	.user-nav-container {
+		display: block;
+		color: #9a9a9a;
+		&.router-link-active,
+		&.router-link-exact-active,
+		&:hover {
+			color:  #41ede1;
+		}
+	}
+	.chat-nav-container,
+	.user-nav-container {
 		padding: 0px 10px;
 		height: 60px;
 		cursor: pointer;
@@ -221,6 +235,8 @@ body {
 			display: inline-block;
 			height: 18px;
 			min-width: 18px;
+			max-width: 40px;
+			overflow-x: hidden;
 			border-radius: 9px;
 			padding: 0px 6px;
 			position: absolute;
@@ -233,27 +249,31 @@ body {
 			font-weight: bold;
 			box-shadow: 0px 0px 0px 2px white;
 		}
-		&:hover {
-			color: #737373;
-		}
+	}
+	&:hover {
+		color:  #41ede1;
 	}
 }
-.mobile-user-links .notifications {
+.navigation-mobile .mobile-user-links .chat-link,
+.navigation-mobile .mobile-user-links .profile-link {
 	height: 55px;
 	margin-right: 0px;
-	.notifications-container {
+	a.chat-nav-container,
+	a.user-nav-container {
 		height: 55px;
+		padding: 0px;
+		&.router-link-active,
+		&.router-link-exact-active {
+			color:  #41ede1;
+		}
 		svg {
-			height: 22px;
-			width: 22px;
-			bottom: 14px;
+			height: 26px;
+			width: 26px;
+			bottom: 12px;
 		}
 		span {
-			top: 30px;
-			right: 28px;
-		}
-		&:hover {
-			color: #737373;
+			top: 34px;
+			right: 30px;
 		}
 	}
 }
