@@ -63,11 +63,13 @@ export default {
   },
   watch: {
     '$route'(to, from){
-      if (to.path == '/chat'){
-        var w = window.innerWidth;
-        if ( w < 769 ){
+      var w = window.innerWidth;
+      if ( w < 769 ){
+        if (to.path == '/chat'){
           this.visible = true;
-        };
+        } else if (from.path == '/chat'){
+          this.visible = false;
+        }
       }
     }
   },

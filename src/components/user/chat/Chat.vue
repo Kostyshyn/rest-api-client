@@ -150,6 +150,9 @@ export default {
 	        }, 0);
 	      }, 0);
       }
+      if (!self.participant2.online){
+        self.participant2.online = true;
+      }
     });
   }
 }
