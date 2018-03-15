@@ -2,6 +2,20 @@
   <div class="profile">
     <div v-if="user">
       Profile
+      <div>
+        <div class="profile-image-wrap">
+          <div v-if="!!user.profile_img" class="profile-image">
+            yes
+          </div>
+          <div v-else class="profile-image">
+            <img src="../../assets/128_profile_placeholder.png" height="128" width="128" alt="profile-image">
+          </div>
+          <div class="profile-image-uploading">
+            <input type="file" @change="imgSelected">
+            <button @click="imgUpload">upload</button>
+          </div>
+        </div>
+      </div>
       <h2>{{ user.username }}</h2>
       <hr>
       <em>followers: {{ user.followers.length }}</em>
@@ -16,14 +30,15 @@
 
 <script>
 import axios from 'axios'
-import * as CONFIG from '../config.js'
-import service from '../services'
+import * as CONFIG from '../../config.js'
+import service from '../../services'
 
 export default {
   name: 'Profile',
   data(){
     return {
-      user: null
+      user: null,
+      userImg: null
     }
   },
   methods: {
@@ -44,6 +59,16 @@ export default {
 
       service.logout(this)
 
+    },
+    imgSelected(e){
+      this.userImg = e.target.files[0];
+      // console.log(e.target.files);
+    },
+    imgUpload(){
+      var fd = new FormData();
+      if (this.userImg){
+        fd.append('profile-image', this.userImg, this.userImg.name);
+      }
     }
   },
   computed: {
@@ -59,8 +84,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
 
 </style>

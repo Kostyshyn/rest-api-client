@@ -4,7 +4,7 @@ import Router from 'vue-router'
 import store from '@/store'
 
 import Home from '@/components/Home'
-import Profile from '@/components/Profile'
+import Profile from '@/components/profile/Profile'
 // user
 import UsersAll from '@/components/user/UsersAll'
 import User from '@/components/user/User'
