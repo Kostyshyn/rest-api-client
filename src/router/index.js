@@ -5,6 +5,7 @@ import store from '@/store'
 
 import Home from '@/components/Home'
 import Profile from '@/components/profile/Profile'
+import EditProfile from '@/components/profile/EditProfile'
 // user
 import UsersAll from '@/components/user/UsersAll'
 import User from '@/components/user/User'
@@ -55,6 +56,12 @@ export default new Router({
       path: '/profile',
       name: 'Profile',
       component: Profile,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/profile/edit',
+      name: 'EditProfile',
+      component: EditProfile,
       meta: { requiresAuth: true }
     },
     {

@@ -5,8 +5,16 @@
         <div class="chat-header box">
           {{ participant2.username }}
         </div>
-        <div class="last-seen-indicator" v-if="!participant2.online">
-          last seen {{ moment(participant2.last_seen).fromNow() }}
+        <div class="last-seen-indicator">
+          <span class="mobile-chat-img">
+            <router-link
+            :to="{ path: `/users/${ participant2.href }` }"
+            class=""
+            active-class="active">
+              <img :src="root + '/' + participant2.profile_img" alt="" class="s-profile-img">
+            </router-link>
+          </span>
+          <span v-if="!participant2.online">seen {{ moment(participant2.last_seen).fromNow() }}</span>
         </div>
         <div class="messages-wrapper" ref="messages-wrapper">
           <div class="messages" ref="messages">
@@ -48,6 +56,7 @@
 
 <script>
 
+import * as CONFIG from '../../../config.js'
 import moment from 'moment'
 import { Event } from '../../../events';
 import chatService from '../../../services/chat-service'
@@ -58,6 +67,7 @@ export default {
   name: 'Chat',
   data(){
     return {
+      root: CONFIG.ROOT_URI,
       chat: null,
       chatActive: false,
       href: null,
@@ -182,14 +192,14 @@ export default {
   display: none;
 }
 .last-seen-indicator {
-  padding: 5px 0px 0px 0px;
+  padding: 17px 15px;
   text-align: center;
   font-size: 14px;
-  color: #737373;
+  color: rgba(115, 115, 115, .6);
   font-weight: bold;
   position: absolute;
-  top: 10px;
-  opacity: .6;
+  /*top: 10px;*/
+  /*opacity: .6;*/
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -253,8 +263,8 @@ export default {
   align-items: flex-end;
 }
 .to .message {
-  background-color: #d6d6d6;
-  border: 2px solid #d6d6d6;
+  background-color: #dee2e6;
+  border: 2px solid #dee2e6;
 }
 .to.unread {
   /*background-color: #e9ecef;*/
@@ -317,7 +327,19 @@ export default {
   width: 40px;
   margin: 0px 0px 3px 2px;
 }
-
+.mobile-chat-img {
+  display: none;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  padding: 10px 15px;
+  background-color: rgba(222, 226, 230, .3);
+  width: 100%;
+  text-align: left;
+}
+.mobile-chat-img img {
+  margin-right: 10px;
+}
 @media screen and (max-width: 1200px){
   .chat-form, .chat {
     width: 640px;
@@ -329,6 +351,9 @@ export default {
   }
 }
 @media screen and (max-width: 768px){
+  .mobile-chat-img {
+    display: inline-block;
+  }
   .chat-form, .chat {
     width: 540px;
   }

@@ -1,30 +1,42 @@
 <template>
-  <div class="profile">
-    <div v-if="user">
-      Profile
-      <div>
+  <div class="profile" v-if="user">
+    <b-row>
+      <b-col lg="2" md="3" sm="4" xs="12">
         <div class="profile-image-wrap">
-          <div class="profile-image" v-if="!!user.profile_img">
+          <div class="profile-image box">
             <img :src="root + '/' + user.profile_img" height="128" width="128" alt="profile-image">
           </div>
-          <div class="profile-image" v-else>
-            <img src="../../assets/128_profile_placeholder.png" height="128" width="128" alt="profile-image">
+        </div>
+      </b-col>
+      <b-col lg="10" md="9" sm="8" xs="12">
+        <div class="profile-main">
+          <div class="profile-info">
+            <h1 class="profile-username">{{ user.username }}</h1>
+            <hr>
+            <em>followers: {{ user.followers.length }}</em>
+            <br>
+            <em>following: {{ user.follows.length }}</em>
+            <br>
+            <br>
+            <button class="button" @click="logout">Logout</button>
+            <div class="profile-control">
+              <b-dropdown id="profile-options-dropdown" variant="link" no-caret>
+                <template slot="button-content">
+                  <icon name="cog"></icon>
+                </template>
+                <b-dropdown-item>
+                  <router-link
+                  :to="{ name: 'EditProfile' }"
+                  class=""
+                  exact
+                  >Edit profile</router-link> 
+                </b-dropdown-item>
+              </b-dropdown>
+            </div>
           </div>
         </div>
-        <div class="profile-image-uploading">
-          <input type="file" @change="imgSelected">
-        </div>
-        <button @click="imgUpload">upload</button>
-      </div>
-      <h2>{{ user.username }}</h2>
-      <hr>
-      <em>followers: {{ user.followers.length }}</em>
-      <br>
-      <em>following: {{ user.follows.length }}</em>
-      <br>
-      <br>
-      <button class="button" @click="logout">Logout</button>
-    </div>
+      </b-col>
+    </b-row>
   </div>
 </template>
 
@@ -32,6 +44,8 @@
 import axios from 'axios'
 import * as CONFIG from '../../config.js'
 import service from '../../services'
+import Icon from 'vue-awesome/components/Icon'
+import 'vue-awesome/icons/cog'
 
 export default {
   name: 'Profile',
@@ -41,6 +55,9 @@ export default {
       userImg: null,
       root: CONFIG.ROOT_URI
     }
+  },
+  components: {
+    Icon
   },
   methods: {
     getUser(){
@@ -60,29 +77,6 @@ export default {
 
       service.logout(this)
 
-    },
-    imgSelected(e){
-      this.userImg = e.target.files[0];
-      // console.log(e.target.files);
-    },
-    imgUpload(){
-      let fd = new FormData();
-      let uri = CONFIG.ROOT_URI + '/api/users/' + this.href;
-      let token = this.$store.getters.getToken;
-      if (this.userImg){
-        fd.append('profile-image', this.userImg, this.userImg.name);
-        axios.put(uri, fd, {
-          headers: {
-            'x-access-token': token,
-            'Content-Type': 'application/json'
-          }
-        }).then(response => {
-          this.user = response.data.user;
-          this.userImg = null;
-        }).catch(e => {
-
-        });
-      }
     }
   },
   computed: {
@@ -98,10 +92,18 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
+.profile-username {
+  font-weight: 450;
+  color: #737373;
+}
+.profile {
+  padding: 30px 0px;
+  position: relative;
 }
 .profile-image-wrap {
+  text-align: center;
+}
+.profile-image {
   display: inline-block;
   position: relative;
   border-radius: 50%;
@@ -109,12 +111,29 @@ h1, h2 {
   height: 128px;
   width: 128px;
 }
-.profile-image {
-  
-}
 .profile-image img {
   width: 100%;
   height: auto;
 }
-
+.profile-main {
+  display: flex;
+  justify-content: space-between;
+}
+.profile-info {
+  width: 100%;
+}
+.profile-control {
+  display: inline-block;
+}
+@media screen and (max-width: 575px){
+  .profile-control {
+    /*padding-top: 35px;*/
+    /*position: absolute;*/
+    /*top: -140px;*/
+  }
+  .profile-username {
+    text-align: center;
+    margin-top: 20px;
+  }
+}
 </style>

@@ -3,14 +3,19 @@
       <b-row>
         <b-col lg="3" md="4" sm="12" class="chat-column">
           <div class="chats" v-if="visible">
-            <div class="chats-header">Chats</div>
+            <div class="chats-header">Messages</div>
             <ul v-if="chats">
-              <li v-for="chat in chats" @click="hideChats">
+              <li v-for="chat in chats" @click="hideChats"> 
                 <router-link
                   :to="{ name: 'Chat', params: { href: participant2(chat).href } }"
-                  class=""
-                  exact
-                >chat with {{ participant2(chat).username }}</router-link>
+                  class="chat-route"
+                  exact>
+                  <router-link
+                  :to="{ path: `/users/${ participant2(chat).href }` }"
+                  class="">
+                    <img :src="root + '/' + participant2(chat).profile_img" alt="" class="s-profile-img">
+                  </router-link>
+                  {{ participant2(chat).username }}</router-link>
               </li>
             </ul>
           </div>
@@ -28,6 +33,7 @@
 import Chat from './Chat.vue'
 import { Event } from '../../../events';
 import chatService from '../../../services/chat-service'
+import * as CONFIG from '../../../config.js'
 
 export default {
   name: 'Chats',
@@ -35,7 +41,8 @@ export default {
     return {
       chats: null,
       visible: false,
-      errors: null
+      errors: null,
+      root: CONFIG.ROOT_URI
     }
   },
   components: {
@@ -54,7 +61,7 @@ export default {
     participant2(chat){
       var participant1 = this.$store.getters.getUser;
       var participant2 = chat.participant2;
-      if (participant1.id == participant2._id){
+      if (participant1._id == participant2._id){
         return chat.participant1;
       } else {
         return chat.participant2;
@@ -123,7 +130,7 @@ export default {
   font-weight: bold;
   font-size: 20px;
   text-align: center;
-  padding: 10px 0px;
+  padding: 10px 15px;
   color: #9a9a9a;
   border-bottom: 1px solid #dee2e6;
 }
@@ -137,14 +144,14 @@ export default {
   margin: 0px;
   width: 100%;
 }
-.chats ul li a {
+.chats ul li a.chat-route {
   outline: none;
   display: inline-block;
   box-sizing: border-box;
   height: auto;
   width: 100%;
   margin: 0px;
-  padding: 15px;
+  padding: 10px 15px;
   transition: .2s;
   background-color: #fff;
   color: #9a9a9a;
@@ -152,18 +159,24 @@ export default {
   text-decoration: none;
   border-bottom: 1px solid #dee2e6;
 }
-.chats ul li a:hover {
+.chats ul li a.chat-route:hover {
   color: #737373;  
 }
-.chats ul li a.router-link-exact-active.router-link-active {
+.chats ul li a.chat-route .s-profile-img {
+  margin-right: 10px;
+}
+.chats ul li a.chat-route.router-link-exact-active.router-link-active {
   background-color: #dee2e6;
   color: #737373;
 }
 @media screen and (max-width: 575px){
-  .chats ul li a {
+  .chats ul li a.chat-route {
     font-size: 20px;
     font-weight: bold;
     padding: 15px;
+  }
+  .chats-header {
+    font-size: 26px;
   }
 }
 
