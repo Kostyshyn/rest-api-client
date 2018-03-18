@@ -151,17 +151,19 @@ export default {
     this.getChat();
     var self = this;
     Event.$on('message', function(message){
-      self.newMessages.push(message);
-      var s = $(self.$refs['messages']).height() - $(self.$refs['messages-wrapper']).scrollTop();
-      if (s < 1000){
-	      setTimeout(function(){
-	        $(self.$refs['messages-wrapper']).animate({
-	          scrollTop: self.$refs['messages-wrapper'].scrollHeight
-	        }, 0);
-	      }, 0);
-      }
-      if (!self.participant2.online){
-        self.participant2.online = true;
+      if (message.chat == self.chat._id){
+        self.newMessages.push(message);
+        var s = $(self.$refs['messages']).height() - $(self.$refs['messages-wrapper']).scrollTop();
+        if (s < 1000){
+          setTimeout(function(){
+            $(self.$refs['messages-wrapper']).animate({
+              scrollTop: self.$refs['messages-wrapper'].scrollHeight
+            }, 0);
+          }, 0);
+        }
+        if (!self.participant2.online){
+          self.participant2.online = true;
+        }
       }
     });
   }

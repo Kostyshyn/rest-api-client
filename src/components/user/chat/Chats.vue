@@ -15,7 +15,7 @@
                   class="">
                     <img :src="root + '/' + participant2(chat).profile_img" alt="" class="s-profile-img">
                   </router-link>
-                  {{ participant2(chat).username }}</router-link>
+                  {{ participant2(chat).username }}|{{ chat.newMessagesCount }}</router-link>
               </li>
             </ul>
           </div>
@@ -61,7 +61,7 @@ export default {
     participant2(chat){
       var participant1 = this.$store.getters.getUser;
       var participant2 = chat.participant2;
-      if (participant1._id == participant2._id){
+      if (participant1.id == participant2._id){
         return chat.participant1;
       } else {
         return chat.participant2;
@@ -112,6 +112,16 @@ export default {
       this.visible = true;
     };
     this.getChats();
+    var self = this;
+      Event.$on('message', function(message){
+        console.log(self.chats)
+        var chat = self.chats.filter(function(chat){
+          console.log(chat._id, message.chat)
+          return chat._id == message.chat;
+        });
+        console.log(chat[0])
+        chat[0].newMessagesCount++; 
+      });
   }
 }
 </script>
