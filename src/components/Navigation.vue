@@ -47,7 +47,6 @@
         <b-col lg="4" md="5" sm="5" v-if="isUserLoggedIn">
 
           <div class="user-links">
-            
             <ul>
               <li class="chat-link">
                 <router-link
@@ -55,7 +54,7 @@
                 class="chat-nav-container"
                 >
                   <icon name="envelope"></icon>
-                  <!-- <span>432</span> -->
+                  <span v-if="notifications.length > 0">{{ notifications.length }}</span>
                 </router-link>
               </li>
               <li class="profile-link">
@@ -63,8 +62,9 @@
                   to="/profile"
                   class="user-nav-container"
                 >
-                  <icon name="user-circle"></icon>
-                  <span v-if="notifications.length > 0">{{ notifications.length }}</span>
+                  <img :src="root + '/' + user.profile_img" alt="" class="s-profile-img">
+                  {{ user.username }}
+                  <!-- <span v-if="notifications.length > 0">{{ notifications.length }}</span> -->
                 </router-link>
               </li>
             </ul> 
@@ -100,27 +100,23 @@ import service from '../services'
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/bell'
 import 'vue-awesome/icons/envelope'
+import * as CONFIG from '../config.js'
 
 export default {
   name: 'Navigation',
   data(){
     return {
-      user: null,
       loginErrors: null,
       userInput: '',
       password: '',
-      notifications: []
+      notifications: [],
+      root: CONFIG.ROOT_URI
     }
   },
   components: {
     Icon
   },
   methods: {
-    // logout(){
-
-    //   service.logout(this)
-
-    // },
     login(){
 
       var w = window.innerWidth;
@@ -146,7 +142,14 @@ export default {
     isUserLoggedIn(){
       return this.$store.getters.getCurrentState.isUserLoggedIn;
     },
-
+    user: {
+      get: function(){
+        return this.$store.getters.getUser;
+      },
+      set: function(){
+        return null
+      }
+    }
   },
   created(){
     // Event.$emit('event');
@@ -163,5 +166,4 @@ export default {
 h1, h2 {
   font-weight: normal;
 }
-
 </style>

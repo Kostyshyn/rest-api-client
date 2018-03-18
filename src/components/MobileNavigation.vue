@@ -37,16 +37,16 @@
             class="chat-nav-container"
             >
             <icon name="envelope"></icon>
-            <!-- <span>4</span> -->
+            <span v-if="notifications.length > 0">{{ notifications.length }}</span>
           </router-link>
         </li>
         <li class="profile-link">
           <router-link
-            to="/profile"
-            class="user-nav-container"
+          to="/profile"
+          class="user-nav-container"
           >
-            <icon name="user-circle"></icon>
-            <span v-if="notifications.length > 0">{{ notifications.length }}</span>
+            <img :src="root + '/' + user.profile_img" alt="" class="s-profile-img">
+            {{ user.username }}
           </router-link>
         </li>
       </ul>
@@ -72,6 +72,7 @@
 
 <script>
 
+import * as CONFIG from '../config.js'
 import service from '../services'
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/bell'
@@ -83,9 +84,9 @@ export default {
   name: 'MobileNavigation',
   data(){
     return {
-      user: null,
       notifications: [],
-      navbarOpen: false
+      navbarOpen: false,
+      root: CONFIG.ROOT_URI
     }
   },
   components: {
@@ -94,14 +95,22 @@ export default {
   computed: {
     isUserLoggedIn(){
       return this.$store.getters.getCurrentState.isUserLoggedIn;
+    },
+    user: {
+      get: function(){
+        return this.$store.getters.getUser;
+      },
+      set: function(){
+        return null
+      }
     }
   },
   methods: {
-    // logout(){
+    logout(){
 
-    //   service.logout(this)
+      service.logout(this)
 
-    // },
+    },
     toggle(){
       this.navbarOpen = !this.navbarOpen;
     },
