@@ -61,7 +61,7 @@ export default {
     participant2(chat){
       var participant1 = this.$store.getters.getUser;
       var participant2 = chat.participant2;
-      if (participant1.id == participant2._id){
+      if (participant1._id == participant2._id){
         return chat.participant1;
       } else {
         return chat.participant2;
