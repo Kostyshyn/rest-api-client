@@ -6,14 +6,6 @@
           {{ participant2.username }}
         </div>
         <div class="last-seen-indicator">
-          <span class="mobile-chat-img">
-            <router-link
-            :to="{ path: `/users/${ participant2.href }` }"
-            class=""
-            active-class="active">
-              <img :src="root + '/' + participant2.profile_img" alt="" class="s-profile-img">
-            </router-link>
-          </span>
           <span v-if="!participant2.online">seen {{ moment(participant2.last_seen).fromNow() }}</span>
         </div>
         <div class="messages-wrapper" ref="messages-wrapper">
@@ -39,15 +31,24 @@
           </div>
         </div>
         <div class="chat-form">
+            <span class="mobile-chat-img">
+              <router-link
+              :to="{ path: `/users/${ participant2.href }` }"
+              class=""
+              active-class="active">
+                <img :src="root + '/' + participant2.profile_img" alt="" class="s-profile-img">
+                <span v-if="participant2.online"class="user-online-indicator"></span>
+              </router-link>
+            </span>
             <textarea-autosize   
             :min-height="40" 
             :max-height="200" 
             name="" id="" 
             v-model="newMessageText" 
-            placeholder="Write message ..."
+            placeholder="..."
             @keydown.native="send"></textarea-autosize>
             <div class="send-message-wrapper">
-              <button class="send-message" @click="send"><icon name="angle-right"></icon></button>
+              <button class="button main-button send-message" @click="send">Send</button>
             </div>
           </div>
       </div>
@@ -179,7 +180,7 @@ export default {
 }
 .chat-column {
   opacity: 0;
-  transition: .15s;
+  transition: .2s;
 }
 .chat-column.active {
   opacity: 1;
@@ -210,6 +211,7 @@ export default {
   height: calc(100vh - 157px);
   overflow-y: auto;
   border-right: 1px solid #dee2e6;
+  /*background-color: #f4f5f7;*/
 }
 .messages {
   padding: 15px 0px;
@@ -220,7 +222,7 @@ export default {
 .message {
   display: inline-block;
   height: auto;
-  padding: 5px 12px 5px 12px;
+  padding: 7px 14px;
   line-height: 18px;
   font-weight: bold;
   color: #737373;
@@ -228,6 +230,7 @@ export default {
   margin: 10px 0px 0px 0px;
   border-radius: 10px;
   transition: all .3s ease;
+  cursor: pointer;
 }
 .from .message-date,
 .to .message-date {
@@ -266,14 +269,12 @@ export default {
 }
 .to .message {
   background-color: #dee2e6;
-  border: 2px solid #dee2e6;
 }
 .to.unread {
   /*background-color: #e9ecef;*/
 }
 .from .message {
-  background-color: #fff;
-  border: 2px solid #41e4de;
+  background-color: #b3f7f3;
 }
 
 .chat-form {
@@ -291,7 +292,7 @@ export default {
   height: auto;
   width: 100%;
   outline: none;
-  border: 2px solid #c2c2c2;
+  border: 1px solid #c2c2c2;
   padding: 5px 10px;
   color: #737373;
   font-size: 14px;
@@ -311,36 +312,18 @@ export default {
   background-color: #d6d6d6;
 }
 .send-message-wrapper {
-  align-self: flex-end;
-}
-.send-message {
-  cursor: pointer;
-  display: flex;
-  height: 47px;
-  width: 47px;
-  border-radius: 4px;
-  outline: none;
-  border: none;
-  background-color: #41e4de;
-  color: #fff;
-}
-.send-message svg {
-  height: 40px;
-  width: 40px;
-  margin: 0px 0px 3px 2px;
+  align-self: center;
 }
 .mobile-chat-img {
   display: none;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  padding: 10px 15px;
-  background-color: rgba(222, 226, 230, .3);
-  width: 100%;
-  text-align: left;
+  /*position: absolute;*/
+  text-align: center;
+  line-height: 44px;
 }
 .mobile-chat-img img {
   margin-right: 10px;
+  position: relative;
+  z-index: 3;
 }
 @media screen and (max-width: 1200px){
   .chat-form, .chat {
@@ -374,6 +357,9 @@ export default {
   .messages-wrapper {
     border-left: none;
     border-right: none;
+  }
+  .user-online-indicator {
+    top: 18px;
   }
   .message {
     padding: 7px 12px 5px 12px;

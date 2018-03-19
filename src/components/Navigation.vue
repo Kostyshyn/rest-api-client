@@ -54,7 +54,7 @@
                 class="chat-nav-container"
                 >
                   <icon name="envelope"></icon>
-                  <span v-if="notifications.length > 0">{{ notifications.length }}</span>
+                  <span class="note-alert" v-if="notifications.length > 0">{{ notifications.length }}</span>
                 </router-link>
               </li>
               <li class="profile-link">

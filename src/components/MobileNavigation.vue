@@ -37,7 +37,7 @@
             class="chat-nav-container"
             >
             <icon name="envelope"></icon>
-            <span v-if="notifications.length > 0">{{ notifications.length }}</span>
+            <span class="note-alert" v-if="notifications.length > 0">{{ notifications.length }}</span>
           </router-link>
         </li>
         <li class="profile-link">
@@ -46,7 +46,7 @@
           class="user-nav-container"
           >
             <img :src="root + '/' + user.profile_img" alt="" class="s-profile-img">
-            {{ user.username }}
+            <!-- {{ user.username }} -->
           </router-link>
         </li>
       </ul>
