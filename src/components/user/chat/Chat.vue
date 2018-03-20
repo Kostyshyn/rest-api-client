@@ -132,9 +132,9 @@ export default {
   computed: {
     participant2(){
       if (this.chat){
-        var participant1 = this.$store.getters.getUser;
+        var participant1Id = this.$store.getters.getUser.id || this.$store.getters.getUser._id;
         var participant2 = this.chat.participant2;
-        if (participant1.id == participant2._id){
+        if (participant1Id == participant2._id){
           return this.chat.participant1;
         } else {
           return this.chat.participant2;

@@ -175,6 +175,7 @@ export default {
   overflow: hidden;
   height: 128px;
   width: 128px;
+  box-shadow: 0px 0px 0px 2px #fff, 0px 0px 0px 4px #41ede1;
 }
 .profile-image img {
   width: 100%;
