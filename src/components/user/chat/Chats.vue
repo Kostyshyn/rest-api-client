@@ -12,7 +12,7 @@
                   exact>
                   <router-link
                   :to="{ path: `/users/${ participant2(chat).href }` }"
-                  class="">
+                  class="u-chat-link">
                     <img :src="root + '/' + participant2(chat).profile_img" alt="" class="s-profile-img">
                     <span v-if="participant2(chat).online"class="user-online-indicator"></span>
                   </router-link>
@@ -115,10 +115,12 @@ export default {
     this.getChats();
     var self = this;
       Event.$on('message', function(message){
-        var chat = self.chats.filter(function(chat){
-          return chat._id == message.chat;
-        });
-        chat[0].newMessagesCount++; 
+        if (self.visible){
+          var chat = self.chats.filter(chat => chat._id == message.chat);
+          self.chats = self.chats.filter(chat => chat._id != message.chat);
+          self.chats.unshift(chat[0]);
+          chat[0].newMessagesCount++;
+        } 
       });
   }
 }
@@ -177,7 +179,11 @@ export default {
   top: 20px;
 }
 .chats ul li a.chat-route:hover {
-  color: #737373;  
+  color: #737373; 
+  text-decoration: none; 
+}
+.chats ul li a.chat-route .u-chat-link:hover {
+  text-decoration: none;
 }
 .chats ul li a.chat-route .s-profile-img {
   margin-right: 10px;
