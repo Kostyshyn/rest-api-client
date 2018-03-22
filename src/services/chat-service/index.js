@@ -107,39 +107,41 @@ export default {
 		var href = context.href ? context.href : context.$route.params.href;
 		var token = context.$store.getters.getToken;
 		if (token && href && context.page != null){
-        // this.loading = true;
-        let uri = CONFIG.ROOT_URI + '/api/users/chat/' + href + '/messages';
-        axios({
-        	url: uri,
-        	method: 'get',
-        	params: {
-        		chat: context.chat._id,
-        		page: context.page
-        	},
-        	headers: {
-        		'x-access-token': token,
-        		'Content-Type': 'application/json'
-        	}
-        }).then(response => {
-        	console.log(response.data)
-          // this.loading = false;
-          var messagesWrapper = context.$refs['messages-wrapper'];
-          var messages = context.$refs['messages'];
-          var h = $(messages).height();
-          context.chat.messages.unshift.apply(context.chat.messages, response.data.messages);
-          context.page = response.data.page;
-          setTimeout(()=> {
-          	$(context.$refs['messages-wrapper']).animate({
-          		scrollTop: ($(messages).height() - h)
-          	}, 0);
-          }, 0)
-      }).catch(e => {
-      	if (e.response){
-      		context.errors = e.response.data.error;
-      	} else {
-      		console.error(e);
-      	}
-      }); 
-  }
+			context.loading = true;
+			let uri = CONFIG.ROOT_URI + '/api/users/chat/' + href + '/messages';
+			axios({
+				url: uri,
+				method: 'get',
+				params: {
+					chat: context.chat._id,
+					page: context.page
+				},
+				headers: {
+					'x-access-token': token,
+					'Content-Type': 'application/json'
+				}
+			}).then(response => {
+				console.log(response.data)
+				// setTimeout(() => {
+					context.loading = false;
+				// }, 700);
+				var messagesWrapper = context.$refs['messages-wrapper'];
+				var messages = context.$refs['messages'];
+				var h = $(messages).height();
+				context.chat.messages.unshift.apply(context.chat.messages, response.data.messages);
+				context.page = response.data.page;
+				setTimeout(()=> {
+					$(context.$refs['messages-wrapper']).animate({
+						scrollTop: ($(messages).height() - h)
+					}, 0);
+				}, 0)
+			}).catch(e => {
+				if (e.response){
+					context.errors = e.response.data.error;
+				} else {
+					console.error(e);
+				}
+			}); 
+		}
 	}
 }

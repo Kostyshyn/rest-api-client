@@ -92,15 +92,11 @@ a {
 	height: 80px;
 	overflow: hidden;
 	text-align: center;
-	transition: .2s;
-	opacity: 0;
+	opacity: .6;
 	img {
 		width: auto;
 		height: 200px;
 		margin-top: -60px;
-	}
-	&.active {
-		opacity: .2;
 	}
 }
 /* buttons */

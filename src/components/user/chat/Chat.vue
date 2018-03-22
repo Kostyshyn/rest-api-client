@@ -10,25 +10,27 @@
         </div>
         <div class="messages-wrapper" ref="messages-wrapper">
           <div class="messages" ref="messages">
-            <div class="loader" v-if="loading" :class="{ active: loading }" >
-              <img src="../../../assets/loader.gif" alt="loader">
+            <div class="preloader" :class='{ active: loading}'>
+              <div class="loader">
+                <img src="../../../assets/loader.gif" alt="loader">
+              </div>
             </div>
-              <div v-for="message in chat.messages" class="" 
-              :class="[ ( message.meta.user == participant2._id ? 'to' : 'from' ),  ( message.meta.read ? '': 'unread' ) ]"> 
-                <div class="message text-wrapping">
-                  {{ message.message }}
-                </div>
-                <span class="message-date">{{ moment(message.created).calendar() }}</span>
-              </div>
-
-              <div v-for="message in newMessages" class="" :class="message.meta.user == participant2._id ? 'to' : 'from' ">
-                <div class="message text-wrapping">
-                  {{ message.message }}
-                </div>
-                <span class="message-date"><span class="send-error" v-if="!message.meta.delivered" :class="{ error: message.meta.error }"></span>{{ moment(message.created).calendar() }}</span>
-              </div>
-
+            <div v-for="message in chat.messages" class="" 
+            :class="[ ( message.meta.user == participant2._id ? 'to' : 'from' ),  ( message.meta.read ? '': 'unread' ) ]"> 
+            <div class="message text-wrapping">
+              {{ message.message }}
+            </div>
+            <span class="message-date">{{ moment(message.created).calendar() }}</span>
           </div>
+
+          <div v-for="message in newMessages" class="" :class="message.meta.user == participant2._id ? 'to' : 'from' ">
+            <div class="message text-wrapping">
+              {{ message.message }}
+            </div>
+            <span class="message-date"><span class="send-error" v-if="!message.meta.delivered" :class="{ error: message.meta.error }"></span>{{ moment(message.created).calendar() }}</span>
+          </div>
+
+        </div>
         </div>
         <div class="chat-form">
             <span class="mobile-chat-img">
@@ -183,6 +185,22 @@ export default {
   transition: .2s;
 }
 .chat-column.active {
+  opacity: 1;
+}
+.preloader {
+  display: flex;
+  align-items: center;
+  top: 0px;
+  width: calc(100% - 15px);
+  height: 100%;
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  background-color: #fff;
+  transition: .15s;
+}
+.preloader.active {
+  visibility: visible;
   opacity: 1;
 }
 .chat-header {
