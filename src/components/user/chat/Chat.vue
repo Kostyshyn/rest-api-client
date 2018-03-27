@@ -20,14 +20,14 @@
             <div class="message text-wrapping">
               {{ message.message }}
             </div>
-            <span class="message-date">{{ moment(message.created).calendar() }}</span>
+            <span class="message-date">{{ moment(message.created).format('H:mm:ss, D MMM YYYY') }}</span>
           </div>
 
           <div v-for="message in newMessages" class="" :class="message.meta.user == participant2._id ? 'to' : 'from' ">
             <div class="message text-wrapping">
               {{ message.message }}
             </div>
-            <span class="message-date"><span class="send-error" v-if="!message.meta.delivered" :class="{ error: message.meta.error }"></span>{{ moment(message.created).calendar() }}</span>
+            <span class="message-date"><span class="send-error" v-if="!message.meta.delivered" :class="{ error: message.meta.error }"></span>{{ moment(message.created).format('H:mm:ss, D MMM YYYY') }}</span>
           </div>
 
         </div>

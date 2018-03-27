@@ -35,6 +35,7 @@
           <router-link
             :to="{ name: 'Chats' }"
             class="chat-nav-container"
+            @click.native="close"
             >
             <icon name="envelope"></icon>
             <span class="note-alert" v-if="notifications.length > 0">{{ notifications.length }}</span>
@@ -44,6 +45,7 @@
           <router-link
           to="/profile"
           class="user-nav-container"
+          @click.native="close"
           >
             <img :src="root + '/' + user.profile_img" alt="" class="s-profile-img">
             <!-- {{ user.username }} -->
