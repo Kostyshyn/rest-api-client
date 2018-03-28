@@ -62,7 +62,7 @@ export default {
     participant2(chat){
       var participant1Id = this.$store.getters.getUser.id || this.$store.getters.getUser._id;
       var participant2 = chat.participant2;
-      if (participant1Id == participant2._id){
+      if (participant1Id === participant2._id){
         return chat.participant1;
       } else {
         return chat.participant2;
@@ -73,16 +73,16 @@ export default {
     '$route'(to, from){
       var w = window.innerWidth;
       if ( w < 769 ){
-        if (to.path == '/chat'){
+        if (to.path === '/chat'){
           this.visible = true;
-        } else if (from.path == '/chat'){
+        } else if (from.path === '/chat'){
           this.visible = false;
         }
       }
     }
   },
   beforeRouteEnter(to, from, next){
-    if (to.path == '/chat'){
+    if (to.path === '/chat'){
       next(vm => {
         var w = window.innerWidth;
         if ( w < 769 ){
@@ -116,10 +116,12 @@ export default {
     var self = this;
       Event.$on('message', function(message){
         if (self.visible){
-          var chat = self.chats.filter(chat => chat._id == message.chat);
-          self.chats = self.chats.filter(chat => chat._id != message.chat);
-          self.chats.unshift(chat[0]);
-          chat[0].newMessagesCount++;
+          var chat = self.chats.filter(chat => chat._id === message.chat);
+          if (chat.length > 0){
+            self.chats = self.chats.filter(chat => chat._id != message.chat);
+            self.chats.unshift(chat[0]);
+            chat[0].newMessagesCount++;
+          }
         } 
       });
   }

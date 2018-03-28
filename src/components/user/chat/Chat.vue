@@ -15,22 +15,23 @@
                 <img src="../../../assets/loader.gif" alt="loader">
               </div>
             </div>
-            <div v-for="message in chat.messages" class="" 
+            <div v-for="(message, i) in chat.messages" class="" 
             :class="[ ( message.meta.user == participant2._id ? 'to' : 'from' ),  ( message.meta.read ? '': 'unread' ) ]"> 
-            <div class="message text-wrapping">
-              {{ message.message }}
+              <div class="message text-wrapping">
+                {{ message.message }}{{ i }}
+              </div>
+              <span class="message-date" v-if="showDate(message, i)">{{ moment(message.created).format('H:mm:ss, D MMM YYYY') }}</span>
+              <span class="message-date" v-else>{{ moment(message.created).format('H:mm:ss') }}</span>
             </div>
-            <span class="message-date">{{ moment(message.created).format('H:mm:ss, D MMM YYYY') }}</span>
-          </div>
 
-          <div v-for="message in newMessages" class="" :class="message.meta.user == participant2._id ? 'to' : 'from' ">
-            <div class="message text-wrapping">
-              {{ message.message }}
+            <div v-for="message in newMessages" class="" :class="message.meta.user == participant2._id ? 'to' : 'from' ">
+              <div class="message text-wrapping">
+                {{ message.message }}
+              </div>
+              <span class="message-date"><span class="send-error" v-if="!message.meta.delivered" :class="{ error: message.meta.error }"></span>{{ moment(message.created).format('H:mm:ss, D MMM YYYY') }}</span>
             </div>
-            <span class="message-date"><span class="send-error" v-if="!message.meta.delivered" :class="{ error: message.meta.error }"></span>{{ moment(message.created).format('H:mm:ss, D MMM YYYY') }}</span>
-          </div>
 
-        </div>
+          </div>
         </div>
         <div class="chat-form">
             <span class="mobile-chat-img">
@@ -106,6 +107,20 @@ export default {
         }, 0);
       }
     },
+    showDate(message, i){
+      if (i < this.chat.messages.length - 1){
+        let unixPrev = parseInt(moment(message.created).unix() * 1000);
+        let unixNext = parseInt(moment(this.chat.messages[i + 1].created).unix() * 1000)
+        let interval = 1000 * 60 * 60 * 24;
+        if ((unixNext - unixPrev) < interval){
+          return false;
+        } else {
+          return true;
+        }
+      } else if(i == this.chat.messages.length - 1){
+        return true;
+      }
+    },
     checkScrollTop(){
       if (this.chat){
         var self =  this;
@@ -113,8 +128,11 @@ export default {
           var messagesWrapper = self.$refs['messages-wrapper'];
           var messages = self.$refs['messages'];
           $(messagesWrapper).on('scroll', function(e){
-            if ($(messagesWrapper).scrollTop() == 0){
-              self.loadMessages();
+            if ($(messagesWrapper).scrollTop() == 0 && self.page != null){
+              self.loading = true;
+              setTimeout(()=> {
+                self.loadMessages();
+              }, 100);
             }
           });
         }, 0);
@@ -136,7 +154,7 @@ export default {
       if (this.chat){
         var participant1Id = this.$store.getters.getUser.id || this.$store.getters.getUser._id;
         var participant2 = this.chat.participant2;
-        if (participant1Id == participant2._id){
+        if (participant1Id === participant2._id){
           return this.chat.participant1;
         } else {
           return this.chat.participant2;
@@ -154,7 +172,7 @@ export default {
     this.getChat();
     var self = this;
     Event.$on('message', function(message){
-      if (message.chat == self.chat._id){
+      if (message.chat === self.chat._id){
         self.newMessages.push(message);
         var s = $(self.$refs['messages']).height() - $(self.$refs['messages-wrapper']).scrollTop();
         if (s < 1000){
@@ -179,6 +197,8 @@ export default {
   position: fixed;
   width: 100%;
   width: 760px;
+  overflow-x: hidden;
+  border-right: 1px solid #dee2e6;
 }
 .chat-column {
   opacity: 0;
@@ -197,7 +217,7 @@ export default {
   opacity: 0;
   position: absolute;
   background-color: #fff;
-  transition: .15s;
+  transition: .1s;
 }
 .preloader.active {
   visibility: visible;
@@ -225,14 +245,22 @@ export default {
   transform: translateX(-50%);
   width: 100%;
 }
+.interval-date {
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 15px 0px;
+  color: #9a9a9a;
+}
 .messages-wrapper {
+  width: calc(100% + 15px);
   height: calc(100vh - 157px);
   overflow-y: auto;
-  border-right: 1px solid #dee2e6;
   /*background-color: #f4f5f7;*/
 }
 .messages {
-  padding: 15px 0px;
+  padding: 15px 10px 0px 0px;
   display: flex;
   flex-direction: column;
   height: auto;
@@ -255,7 +283,9 @@ export default {
   display: block;
   font-size: 12px;
   margin-bottom: 5px;
-  color: #d6d6d6;
+  margin-top: 3px;
+  /*color: #d6d6d6;*/
+  color: #aeaeae;
   padding: 0px 5px;
 }
 .send-error {
@@ -273,6 +303,10 @@ export default {
 .from, .to {
   padding: 0px 15px;
 }
+.from:last-of-type,
+.to:last-of-type {
+  padding-bottom: 15px;
+}
 .from .message-date .send-error {
   margin: 5px 5px 0px 0px;
 }
@@ -284,6 +318,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  width: 100%;
 }
 .to .message {
   background-color: #dee2e6;
@@ -372,7 +407,8 @@ export default {
   }
 }
 @media screen and (max-width: 575px){
-  .messages-wrapper {
+  .messages-wrapper,
+  .chat {
     border-left: none;
     border-right: none;
   }

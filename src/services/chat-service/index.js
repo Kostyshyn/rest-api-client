@@ -52,6 +52,7 @@ export default {
 				}
 				context.checkScrollTop();
 				context.scroll();
+
 			}).catch(e => {
 				if (e.response){
 					context.errors = e.response.data.error;
@@ -107,7 +108,6 @@ export default {
 		var href = context.href ? context.href : context.$route.params.href;
 		var token = context.$store.getters.getToken;
 		if (token && href && context.page != null){
-			context.loading = true;
 			let uri = CONFIG.ROOT_URI + '/api/users/chat/' + href + '/messages';
 			axios({
 				url: uri,
@@ -121,10 +121,10 @@ export default {
 					'Content-Type': 'application/json'
 				}
 			}).then(response => {
-				console.log(response.data)
-				// setTimeout(() => {
-					context.loading = false;
-				// }, 700);
+				console.log(response.data);
+				if (response.data.messages == null){ 
+					context.loading = false; 
+				};
 				var messagesWrapper = context.$refs['messages-wrapper'];
 				var messages = context.$refs['messages'];
 				var h = $(messages).height();
@@ -134,8 +134,12 @@ export default {
 					$(context.$refs['messages-wrapper']).animate({
 						scrollTop: ($(messages).height() - h)
 					}, 0);
-				}, 0)
+				}, 0);
+				setTimeout(()=> {
+					context.loading = false;
+				}, 200);
 			}).catch(e => {
+				context.loading = false;
 				if (e.response){
 					context.errors = e.response.data.error;
 				} else {
