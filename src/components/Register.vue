@@ -2,7 +2,7 @@
   <b-row>
     <b-col lg="6" md="8" sm="10" offset-sm="1"  offset-md="2" offset-lg="3">
       <div class="register-form">
-        <h1>{{ msg }}</h1>
+        <h1 class="heading-l">{{ msg }}</h1>
         <form action="" @submit.prevent="register">
           <input type="text" placeholder="username" v-model="username">
           <input type="text" placeholder="email" v-model="email">

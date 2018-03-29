@@ -253,11 +253,14 @@ export default {
     /*top: -140px;*/
   }
   .modal-relations-wrapper {
-    height: calc(100vh - 115px);
+    height: calc(100vh - 105px);
   }
   .profile-username {
     text-align: center;
     margin-top: 20px;
+  }
+  .relation-link {
+    font-size: 20px;
   }
 }
 </style>

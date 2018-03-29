@@ -1,6 +1,7 @@
 import * as CONFIG from '../../config.js'
 import axios from 'axios'
 import { Event } from '../../events'
+import striptags from 'striptags'
 
 export default {
 	sortChats(chats){
@@ -69,7 +70,7 @@ export default {
 			var user = context.$store.getters.getUser;
 			if (context.newMessageText != null && context.newMessageText.trim() != '' && token){
 				var newMessage = {
-					message: context.newMessageText,
+					message: striptags(context.newMessageText),
 					created: Date.now(),
 					meta: {
 						user: user.id,

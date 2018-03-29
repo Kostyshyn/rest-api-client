@@ -77,7 +77,7 @@
     </b-container>
     <modal name="login" :width="350" height="auto">
       <div class="login-modal">
-        <h1>Login</h1>
+        <h1 class="heading-l">Login</h1>
         <form action="" @submit.prevent="login">
           <input type="text" placeholder="username or email" v-model="userInput">
           <br>

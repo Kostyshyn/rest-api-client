@@ -17,18 +17,15 @@
             </div>
             <div v-for="(message, i) in chat.messages" class="" 
             :class="[ ( message.meta.user == participant2._id ? 'to' : 'from' ),  ( message.meta.read ? '': 'unread' ) ]"> 
-              <div class="message text-wrapping">
-                {{ message.message }}{{ i }}
+              <div class="message text-wrapping" v-html="anchorMessage(message.message)">
               </div>
-              <span class="message-date" v-if="showDate(message, i)">{{ moment(message.created).format('H:mm:ss, D MMM YYYY') }}</span>
-              <span class="message-date" v-else>{{ moment(message.created).format('H:mm:ss') }}</span>
+              <span class="message-date">{{ moment(message.created).format('H:mm:ss') }}</span>
+              <div class="interval-date" v-if="showDate(message, i)">{{ moment(message.created).format('D MMM YYYY') }}</div>
             </div>
 
             <div v-for="message in newMessages" class="" :class="message.meta.user == participant2._id ? 'to' : 'from' ">
-              <div class="message text-wrapping">
-                {{ message.message }}
-              </div>
-              <span class="message-date"><span class="send-error" v-if="!message.meta.delivered" :class="{ error: message.meta.error }"></span>{{ moment(message.created).format('H:mm:ss, D MMM YYYY') }}</span>
+              <div class="message text-wrapping" v-html="anchorMessage(message.message)"></div>
+              <span class="message-date"><span class="send-error" v-if="!message.meta.delivered" :class="{ error: message.meta.error }"></span>{{ moment(message.created).format('H:mm:ss, D MMM') }}</span>
             </div>
 
           </div>
@@ -37,14 +34,14 @@
             <span class="mobile-chat-img">
               <router-link
               :to="{ path: `/users/${ participant2.href }` }"
-              class=""
+              class="chat-u-form-link"
               active-class="active">
                 <img :src="root + '/' + participant2.profile_img" alt="" class="s-profile-img">
                 <span v-if="participant2.online"class="user-online-indicator"></span>
               </router-link>
             </span>
             <textarea-autosize   
-            :min-height="40" 
+            :min-height="30" 
             :max-height="200" 
             name="" id="" 
             v-model="newMessageText" 
@@ -60,6 +57,7 @@
 
 <script>
 
+import anchorme from 'anchorme'
 import * as CONFIG from '../../../config.js'
 import moment from 'moment'
 import { Event } from '../../../events';
@@ -137,6 +135,9 @@ export default {
           });
         }, 0);
       }      
+    },
+    anchorMessage(message){
+      return anchorme(message, { truncate: 40 });
     },
     checkDelivering(){
       var self = this;
@@ -248,10 +249,10 @@ export default {
 .interval-date {
   width: 100%;
   text-align: center;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: bold;
-  padding: 15px 0px;
-  color: #9a9a9a;
+  padding: 25px 0px;
+  color: rgba(115, 115, 115, .6);
 }
 .messages-wrapper {
   width: calc(100% + 15px);
@@ -341,11 +342,12 @@ export default {
   box-shadow: 0px -4px 25px 0px rgba(46, 61, 73, 0.2);
 }
 .chat-form textarea {
-  min-height: 40px;
+  min-height: 30px;
   height: auto;
   width: 100%;
   outline: none;
-  border: 1px solid #c2c2c2;
+  border: 1px solid #dee2e6;
+  background-color: #f4f5f7;
   padding: 5px 10px;
   color: #737373;
   font-size: 14px;
@@ -371,12 +373,15 @@ export default {
   display: none;
   /*position: absolute;*/
   text-align: center;
-  line-height: 44px;
+  line-height: 42px;
 }
 .mobile-chat-img img {
   margin-right: 10px;
   position: relative;
   z-index: 3;
+}
+.chat-u-form-link {
+  display: inline-block;
 }
 @media screen and (max-width: 1200px){
   .chat-form, .chat {
@@ -396,11 +401,14 @@ export default {
     width: 540px;
   }
   .messages-wrapper {
-    height: calc(100vh - 190px);
-    /*height: calc(100vh - 137px);*/
+    height: calc(100vh - 113px);
+  }
+  .chat-form {
+    padding: 10px 15px;
   }
   .chat-form textarea {
     margin-right: 0px;
+    line-height: 16px;
   }
   .send-message {
     display: none;
@@ -413,7 +421,7 @@ export default {
     border-right: none;
   }
   .user-online-indicator {
-    top: 18px;
+    top: 12px;
   }
   .message {
     padding: 7px 12px 5px 12px;

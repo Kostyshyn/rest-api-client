@@ -3,17 +3,41 @@
       <b-row>
         <b-col lg="3" md="4" sm="12" class="chat-column">
           <div class="chats" v-if="visible">
-            <div class="chats-header">Messages</div>
-            <ul v-if="chats">
+            <div class="chats-header">
+              <div class="heading-m" v-if="!searchVisible">Chats</div>
+              <input 
+                type="text" 
+                placeholder="Search ..." 
+                v-model="searchChatsInput" 
+                :class="{ active: searchVisible }" 
+                class="search-chats-input no-select">
+              <div class="search-btn" @click="toggleSearch"><icon name="search"></icon></div> 
+            </div>
+            <ul v-if="chats && !filteredChats">
               <li v-for="chat in chats" @click="hideChats"> 
                 <router-link
                   :to="{ name: 'Chat', params: { href: participant2(chat).href } }"
-                  class="chat-route box-l"
+                  class="chat-route box-l no-select"
                   exact>
                   <router-link
                   :to="{ path: `/users/${ participant2(chat).href }` }"
-                  class="u-chat-link">
-                    <img :src="root + '/' + participant2(chat).profile_img" alt="" class="s-profile-img">
+                  class="u-chat-link no-select">
+                    <img :src="root + '/' + participant2(chat).profile_img" alt="" class="s-profile-img no-select">
+                    <span v-if="participant2(chat).online"class="user-online-indicator"></span>
+                  </router-link>
+                  {{ participant2(chat).username }} <span class="note-alert" v-if="chat.newMessagesCount > 0">{{ chat.newMessagesCount }}</span></router-link>
+              </li>
+            </ul>
+            <ul v-if="filteredChats">
+              <li v-for="chat in filteredChats" @click="hideChats"> 
+                <router-link
+                  :to="{ name: 'Chat', params: { href: participant2(chat).href } }"
+                  class="chat-route box-l no-select"
+                  exact>
+                  <router-link
+                  :to="{ path: `/users/${ participant2(chat).href }` }"
+                  class="u-chat-link no-select">
+                    <img :src="root + '/' + participant2(chat).profile_img" alt="" class="s-profile-img no-select">
                     <span v-if="participant2(chat).online"class="user-online-indicator"></span>
                   </router-link>
                   {{ participant2(chat).username }} <span class="note-alert" v-if="chat.newMessagesCount > 0">{{ chat.newMessagesCount }}</span></router-link>
@@ -35,19 +59,25 @@ import Chat from './Chat.vue'
 import { Event } from '../../../events';
 import chatService from '../../../services/chat-service'
 import * as CONFIG from '../../../config.js'
+import Icon from 'vue-awesome/components/Icon'
+import 'vue-awesome/icons/search'
 
 export default {
   name: 'Chats',
   data(){
     return {
       chats: null,
+      filteredChats: null,
       visible: false,
       errors: null,
-      root: CONFIG.ROOT_URI
+      root: CONFIG.ROOT_URI,
+      searchVisible: false,
+      searchChatsInput: null
     }
   },
   components: {
-    Chat
+    Chat,
+    Icon
   },
   methods: {
     getChats(){
@@ -58,6 +88,13 @@ export default {
       if ( w < 769 ){
         this.visible = false;
       };
+    },
+    toggleSearch(){
+      this.searchVisible = !this.searchVisible;
+      this.searchChatsInput = null;
+      if (this.filteredChats){
+        this.filteredChats = null;
+      }
     },
     participant2(chat){
       var participant1Id = this.$store.getters.getUser.id || this.$store.getters.getUser._id;
@@ -78,6 +115,11 @@ export default {
         } else if (from.path === '/chat'){
           this.visible = false;
         }
+      }
+    },
+    'searchChatsInput'(value){
+      if (value){
+        this.filteredChats = this.chats.filter(chat => this.participant2(chat).username.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0 );
       }
     }
   },
@@ -138,13 +180,18 @@ export default {
   background-color: #f4f5f7;
 }
 .chats-header {
-  min-height: 30px;
+  min-height: 55px;
   height: auto;
-  font-weight: bold;
-  font-size: 20px;
-  text-align: left;
-  padding: 15px 15px 0px 15px;
-  color: #9a9a9a;
+  padding: 10px 15px;
+  background-color: #fff;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between
+}
+.chats-header .search-btn {
+  position: absolute;
+  right: 15px;
 }
 .chats ul {
   margin: 0px;
@@ -197,17 +244,19 @@ export default {
   color: #737373;
 }
 @media screen and (max-width: 575px){
+  .chats {
+    border-left: none;
+    border-right: none;
+  }
   .chats ul li a.chat-route {
     font-size: 20px;
-    font-weight: bold;
-    padding: 15px;
   }
   .user-online-indicator {
-    top: 13px;
+    top: 8px;
     left: 13px;
   }
   .chats ul li a.chat-route .note-alert {
-    top: 24px;
+    top: 19px;
   }
   .chats-header {
     font-size: 22px;

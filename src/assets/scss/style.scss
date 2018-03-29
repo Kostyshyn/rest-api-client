@@ -196,6 +196,22 @@ a {
 	}
 
 }
+.search-btn {
+	cursor: pointer;
+	display: inline-block;
+	width: 35px;
+	height: 35px;
+	position: relative;
+	svg {
+		height: 26px;
+		width: 26px;
+		display: inline-block;
+		position: absolute;
+		bottom: 5px;
+		right: 5px;
+		color: #9a9a9a;
+	}
+}
 
 /*navigation*/
 .navigation-top {
@@ -347,11 +363,11 @@ a {
 	}
 }
 .navigation-mobile .mobile-user-links .chat-link {
-	height: 55px;
+	height: 50px;
 	margin-right: 0px;
 	a.chat-nav-container,
 	a.user-nav-container {
-		height: 55px;
+		height: 50px;
 		padding: 0px;
 		&.router-link-active,
 		&.router-link-exact-active {
@@ -363,8 +379,8 @@ a {
 			bottom: 12px;
 		}
 		span {
-			top: 34px;
-			right: 30px;
+			top: 26px;
+			right: 34px;
 		}
 	}
 }
@@ -410,7 +426,7 @@ a {
 
 .navigation-mobile {
 	display: none;
-	height: 60px;
+	height: 50px;
 	width: 100%;
 	position: fixed;
 	z-index: 9999;
@@ -427,8 +443,8 @@ a {
 			a {
 				display: inline-block;
 				text-decoration: none;
-				height: 60px;
-				line-height: 60px;
+				height: 50px;
+				line-height: 50px;
 				padding: 0px 10px;
 				font-weight: bold; 
 				color: #a1a1a1;
@@ -449,7 +465,7 @@ a {
 		height: 100vh;
 		background-color: white;
 		position: absolute;
-		top: 60px;
+		top: 50px;
 		left: -20px;
 		transform: translateX(-220px);
 		transition: .35s ease-in-out;
@@ -482,7 +498,7 @@ a {
 }
 
 .hidden-nav-button {
-	height: 60px;
+	height: 50px;
 	width: 60px;
 	cursor: pointer;
 	.hidden-nav-button-wrapper {
@@ -490,7 +506,7 @@ a {
 		display: inline-block;
 		width: 35px;
 		height: 35px;
-		margin: 13px 0px 0px 15px;
+		margin: 9px 0px 0px 15px;
 		span {
 			display: inline-block;
 			width: 30px;
@@ -556,7 +572,7 @@ a {
 	/*top: 300px !important;*/
 }
 .profile-info .v--modal-overlay .v--modal-box {
-  top: 60px !important;
+  top: 50px !important;
 }
 .login-modal,
 .login-form,
@@ -568,16 +584,37 @@ a {
 		width: 100%;
 		height: 38px;
 		outline: none;
-		border: 2px solid #c2c2c2;
+		border: 1px solid #dee2e6;
+		background-color: #f4f5f7;
 		border-radius: 4px;
 		padding: 5px 10px;
 		font-size: 18px;
-		color: #737373;
+		color: #9a9a9a;
 		margin-bottom: 15px;
 		transition: all .3s;
 		&::placeholder {
-			color: #c1c1c1c1;
+			color: #c1c1c1;
 		}
+	}
+}
+.search-chats-input {
+	position: absolute;
+	width: calc(100% - 80px);
+	height: 34px;
+	outline: none;
+	border: 1px solid #dee2e6;
+	background-color: #f4f5f7;
+	border-radius: 4px;
+	padding: 5px 10px;
+	font-size: 16px;
+	color: #9a9a9a;
+	transition: all .15s;
+	opacity: 0;
+	&::placeholder {
+		color: #c1c1c1;
+	}
+	&.active {
+		opacity: 1;
 	}
 }
 ul.auth-errors {
@@ -635,7 +672,7 @@ ul.auth-errors {
 		display: flex;
 	}
 	.page {
-		padding-top: 60px;
+		padding-top: 50px;
 	}
 	.profile-info .v--modal-overlay .v--modal-box {
 		width: 100% !important;
