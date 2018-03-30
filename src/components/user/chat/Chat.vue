@@ -5,7 +5,7 @@
         <div class="chat-header box">
           {{ participant2.username }}
         </div>
-        <div class="last-seen-indicator">
+        <div class="last-seen-indicator no-select">
           <span v-if="!participant2.online">seen {{ moment(participant2.last_seen).fromNow() }}</span>
         </div>
         <div class="messages-wrapper" ref="messages-wrapper">
@@ -15,7 +15,7 @@
                 <img src="../../../assets/loader.gif" alt="loader">
               </div>
             </div>
-            <div v-for="(message, i) in chat.messages" class="" 
+            <div v-for="(message, i) in chat.messages" class="no-select" 
             :class="[ ( message.meta.user == participant2._id ? 'to' : 'from' ),  ( message.meta.read ? '': 'unread' ) ]"> 
               <div class="message text-wrapping" v-html="anchorMessage(message.message)">
               </div>
@@ -45,7 +45,7 @@
             :max-height="200" 
             name="" id="" 
             v-model="newMessageText" 
-            placeholder="..."
+            placeholder="Type a message here ..."
             @keydown.native="send"></textarea-autosize>
             <div class="send-message-wrapper">
               <button class="button main-button send-message" @click="send">Send</button>
@@ -269,7 +269,7 @@ export default {
 .message {
   display: inline-block;
   height: auto;
-  padding: 7px 14px;
+  padding: 10px 15px;
   line-height: 18px;
   font-weight: bold;
   color: #737373;
@@ -346,7 +346,8 @@ export default {
   height: auto;
   width: 100%;
   outline: none;
-  border: 1px solid #dee2e6;
+  /*border: 1px solid #dee2e6;*/
+  border: none;
   background-color: #f4f5f7;
   padding: 5px 10px;
   color: #737373;
@@ -401,7 +402,7 @@ export default {
     width: 540px;
   }
   .messages-wrapper {
-    height: calc(100vh - 113px);
+    height: calc(100vh - 170px);
   }
   .chat-form {
     padding: 10px 15px;
@@ -424,7 +425,7 @@ export default {
     top: 12px;
   }
   .message {
-    padding: 7px 12px 5px 12px;
+    padding: 10px 15px;
     line-height: 20px;
     font-weight: bold;
     font-size: 16px;

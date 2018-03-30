@@ -159,7 +159,7 @@ export default {
 <style scoped>
 .profile-username {
   font-weight: 450;
-  color: #737373;
+  color: #9a9a9a;
 }
 .profile {
   padding: 30px 0px;

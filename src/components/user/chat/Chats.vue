@@ -4,7 +4,7 @@
         <b-col lg="3" md="4" sm="12" class="chat-column">
           <div class="chats" v-if="visible">
             <div class="chats-header">
-              <div class="heading-m" v-if="!searchVisible">Chats</div>
+              <div class="heading-m t-center" :class="{ active: !searchVisible }">Chats</div>
               <input 
                 type="text" 
                 placeholder="Search ..." 
@@ -28,7 +28,7 @@
                   {{ participant2(chat).username }} <span class="note-alert" v-if="chat.newMessagesCount > 0">{{ chat.newMessagesCount }}</span></router-link>
               </li>
             </ul>
-            <ul v-if="filteredChats">
+            <ul v-if="filteredChats && filteredChats.length > 0">
               <li v-for="chat in filteredChats" @click="hideChats"> 
                 <router-link
                   :to="{ name: 'Chat', params: { href: participant2(chat).href } }"
@@ -119,7 +119,8 @@ export default {
     },
     'searchChatsInput'(value){
       if (value){
-        this.filteredChats = this.chats.filter(chat => this.participant2(chat).username.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0 );
+        const regex = new RegExp(value.trim(), 'i');
+        this.filteredChats = this.chats.filter(chat => regex.test(this.participant2(chat).username) );
       }
     }
   },
@@ -182,16 +183,25 @@ export default {
 .chats-header {
   min-height: 55px;
   height: auto;
-  padding: 10px 15px;
+  padding: 10px;
   background-color: #fff;
   border-bottom: 1px solid #dee2e6;
   display: flex;
   align-items: center;
   justify-content: space-between
 }
+.chats-header .heading-m {
+  color: #9a9a9a;
+  width: 100%;
+  transition: all .25s;
+  opacity: 0;
+}
 .chats-header .search-btn {
   position: absolute;
   right: 15px;
+}
+.chats-header .heading-m.active {
+  opacity: 1;
 }
 .chats ul {
   margin: 0px;
@@ -247,6 +257,7 @@ export default {
   .chats {
     border-left: none;
     border-right: none;
+    min-height: calc(100vh - 107px);
   }
   .chats ul li a.chat-route {
     font-size: 20px;
