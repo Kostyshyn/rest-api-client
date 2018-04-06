@@ -12,14 +12,14 @@
           <div class="messages" ref="messages">
             <div class="preloader" :class='{ active: loading}'>
               <div class="loader">
-                <img src="../../../assets/loader.gif" alt="loader">
+                <i class="circle-preloader"></i>
               </div>
             </div>
             <div v-for="(message, i) in chat.messages" class="no-select" 
             :class="[ ( message.meta.user == participant2._id ? 'to' : 'from' ),  ( message.meta.read ? '': 'unread' ) ]"> 
               <div class="message text-wrapping" v-html="anchorMessage(message.message)">
               </div>
-              <span class="message-date">{{ moment(message.created).format('H:mm:ss') }}</span>
+              <span class="message-date">{{ moment(message.created).format('H:mm:ss, D MMM') }}</span>
               <div class="interval-date" v-if="showDate(message, i)">{{ moment(message.created).format('D MMM YYYY') }}</div>
             </div>
 
@@ -31,26 +31,45 @@
           </div>
         </div>
         <div class="chat-form">
-            <span class="mobile-chat-img">
-              <router-link
-              :to="{ path: `/users/${ participant2.href }` }"
-              class="chat-u-form-link"
-              active-class="active">
-                <img :src="root + '/' + participant2.profile_img" alt="" class="s-profile-img">
-                <span v-if="participant2.online"class="user-online-indicator"></span>
-              </router-link>
-            </span>
-            <textarea-autosize   
-            :min-height="30" 
-            :max-height="200" 
-            name="" id="" 
-            v-model="newMessageText" 
-            placeholder="Type a message here ..."
-            @keydown.native="send"></textarea-autosize>
-            <div class="send-message-wrapper">
-              <button class="button main-button send-message" @click="send">Send</button>
-            </div>
+          <span class="mobile-chat-img">
+            <router-link
+            :to="{ path: `/users/${ participant2.href }` }"
+            class="chat-u-form-link"
+            active-class="active">
+              <img :src="root + '/' + participant2.profile_img" alt="" class="s-profile-img">
+              <span v-if="participant2.online"class="user-online-indicator"></span>
+            </router-link>
+          </span>
+          <textarea-autosize   
+          :min-height="30" 
+          :max-height="200" 
+          name="" id="" 
+          v-model="newMessageText" 
+          placeholder="Type a message here ..."
+          @keydown.native="send">
+          </textarea-autosize>
+          <div class="chat-share"  @click="$modal.show('chat-share')">
+             <icon name="paperclip"></icon>
           </div>
+
+          <modal name="chat-share" :pivotY="0.2" :width="320" height="auto" :maxHeight="600" :scrollable="true">
+            <div class="pad-15-wrapper">
+              <div class="heading-m modal-heading">Share
+                <div class="close-btn" @click="$modal.hide('chat-share')">
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+            </div>
+            <div class="modal-wrapper">
+              Files and images
+            </div>
+        </modal>
+
+          <div class="send-message-wrapper">
+            <button class="button main-button send-message" @click="send">Send</button>
+          </div>
+        </div>
       </div>
     </b-col>
 </template>
@@ -62,8 +81,10 @@ import * as CONFIG from '../../../config.js'
 import moment from 'moment'
 import { Event } from '../../../events';
 import chatService from '../../../services/chat-service'
+// icons 
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/angle-right'
+import 'vue-awesome/icons/paperclip'
 
 export default {
   name: 'Chat',
@@ -349,13 +370,16 @@ export default {
   /*border: 1px solid #dee2e6;*/
   border: none;
   background-color: #f4f5f7;
-  padding: 5px 10px;
+  padding: 5px 40px 5px 10px;
   color: #737373;
   font-size: 14px;
   line-height: 18px;
   margin-right: 10px;
   border-radius: 4px;
 } 
+.chat-form textarea::placeholder {
+  color: #c1c1c1;
+}
 .chat-form textarea::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
 }
@@ -383,6 +407,18 @@ export default {
 }
 .chat-u-form-link {
   display: inline-block;
+}
+.chat-share {
+  position: absolute;
+  right: 110px;
+  top: 24px;
+  cursor: pointer;
+}
+.chat-share svg {
+  color: #c1c1c1;
+  height: 28px;
+  width: 28px;
+  transform: rotate(90deg);
 }
 @media screen and (max-width: 1200px){
   .chat-form, .chat {
@@ -432,6 +468,12 @@ export default {
   }
   .chat-form, .chat {
     width: 100%;
+  }
+  .chat-share {
+    position: absolute;
+    right: 22px;
+    top: 18px;
+    cursor: pointer;
   }
 }
 
