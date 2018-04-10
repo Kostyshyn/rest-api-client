@@ -198,7 +198,8 @@ export default {
 }
 .modal-relations-wrapper {
   padding: 15px;
-  background-color: #f4f5f7;
+  /*background-color: #f4f5f7;*/
+  background-color: #e9ecef;
   border-top: 1px solid #dee2e6;
   height: auto;
   max-height: 600px;

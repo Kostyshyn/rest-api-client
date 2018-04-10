@@ -369,7 +369,8 @@ export default {
   outline: none;
   /*border: 1px solid #dee2e6;*/
   border: none;
-  background-color: #f4f5f7;
+  /*background-color: #f4f5f7;*/
+  background-color: #e9ecef;
   padding: 5px 40px 5px 10px;
   color: #737373;
   font-size: 14px;
@@ -378,7 +379,8 @@ export default {
   border-radius: 4px;
 } 
 .chat-form textarea::placeholder {
-  color: #c1c1c1;
+  /*color: #c1c1c1;*/
+  color: #9a9a9a;
 }
 .chat-form textarea::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
@@ -415,7 +417,8 @@ export default {
   cursor: pointer;
 }
 .chat-share svg {
-  color: #c1c1c1;
+  /*color: #c1c1c1;*/
+  color: #9a9a9a;
   height: 28px;
   width: 28px;
   transform: rotate(90deg);

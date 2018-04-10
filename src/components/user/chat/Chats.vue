@@ -178,7 +178,8 @@ export default {
   border-right: 1px solid #dee2e6;
   min-height: calc(100vh - 80px);
   height: auto;
-  background-color: #f4f5f7;
+  /*background-color: #f4f5f7;*/
+  background-color: #e9ecef;
 }
 .chats-header {
   min-height: 55px;
@@ -246,7 +247,7 @@ export default {
 }
 .chats ul li a.chat-route .s-profile-img {
   margin-right: 10px;
-  z-index: 3;
+  z-index: 0;
   position: relative;
 }
 .chats ul li a.chat-route.router-link-exact-active.router-link-active {
